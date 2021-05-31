@@ -1,16 +1,17 @@
-import 'dart:convert';
-
-import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
 import 'package:open_file/open_file.dart';
+import 'package:social_start/controllers/auth_controller.dart';
+import 'package:social_start/services/chat_service.dart';
 import 'package:uuid/uuid.dart';
 
 class ChatPage extends StatefulWidget {
+  final String chatId;
+  final String receiverId;
+  final _currentUser = AuthController().getCurrentUser().uid;
+  ChatPage({this.receiverId, this.chatId});
   static final String pageName = "chat";
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -18,113 +19,107 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   List<types.Message> _messages = [];
-  final _user = const types.User(id: '06c33e8b-e835-4736-80f4-63f44b66666c');
+  var _user;
 
   @override
   void initState() {
+    _user = types.User(id: widget._currentUser);
     super.initState();
-    _loadMessages();
   }
 
-  void _addMessage(types.Message message) {
-    setState(() {
-      _messages.insert(0, message);
-    });
-  }
+  // void _handleAtachmentPressed() {
+  //   showModalBottomSheet<void>(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return SizedBox(
+  //         height: 144,
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.stretch,
+  //           children: <Widget>[
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //                 _handleImageSelection();
+  //               },
+  //               child: const Align(
+  //                 alignment: Alignment.centerLeft,
+  //                 child: Text('Photo'),
+  //               ),
+  //             ),
+  //             TextButton(
+  //               onPressed: () {
+  //                 Navigator.pop(context);
+  //                 _handleFileSelection();
+  //               },
+  //               child: const Align(
+  //                 alignment: Alignment.centerLeft,
+  //                 child: Text('File'),
+  //               ),
+  //             ),
+  //             TextButton(
+  //               onPressed: () => Navigator.pop(context),
+  //               child: const Align(
+  //                 alignment: Alignment.centerLeft,
+  //                 child: Text('Cancel'),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  void _handleAtachmentPressed() {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return SizedBox(
-          height: 144,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _handleImageSelection();
-                },
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Photo'),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _handleFileSelection();
-                },
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('File'),
-                ),
-              ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Cancel'),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _handleFileSelection() async {
+  //   final result = await FilePicker.platform.pickFiles(
+  //     type: FileType.any,
+  //   );
+  //
+  //   if (result != null) {
+  //     final message = types.FileMessage(
+  //       authorId: _user.id,
+  //       fileName: result.files.single.name ?? '',
+  //       id: const Uuid().v4(),
+  //       mimeType: lookupMimeType(result.files.single.path ?? ''),
+  //       size: result.files.single.size ?? 0,
+  //       timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
+  //       uri: result.files.single.path ?? '',
+  //     );
+  //
+  //     _addMessage(message: message);
+  //   } else {
+  //     // User canceled the picker
+  //   }
+  // }
 
-  void _handleFileSelection() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.any,
-    );
-
-    if (result != null) {
-      final message = types.FileMessage(
-        authorId: _user.id,
-        fileName: result.files.single.name ?? '',
-        id: const Uuid().v4(),
-        mimeType: lookupMimeType(result.files.single.path ?? ''),
-        size: result.files.single.size ?? 0,
-        timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
-        uri: result.files.single.path ?? '',
-      );
-
-      _addMessage(message);
-    } else {
-      // User canceled the picker
-    }
-  }
-
-  void _handleImageSelection() async {
-    final result = await ImagePicker().getImage(
-      imageQuality: 70,
-      maxWidth: 1440,
-      source: ImageSource.gallery,
-    );
-
-    if (result != null) {
-      final bytes = await result.readAsBytes();
-      final image = await decodeImageFromList(bytes);
-      final imageName = result.path.split('/').last;
-
-      final message = types.ImageMessage(
-        authorId: _user.id,
-        height: image.height.toDouble(),
-        id: const Uuid().v4(),
-        imageName: imageName,
-        size: bytes.length,
-        timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
-        uri: result.path,
-        width: image.width.toDouble(),
-      );
-
-      _addMessage(message);
-    } else {
-      // User canceled the picker
-    }
-  }
+  // void _handleImageSelection() async {
+  //   final result = await ImagePicker().getImage(
+  //     imageQuality: 70,
+  //     maxWidth: 1440,
+  //     source: ImageSource.gallery,
+  //   );
+  //
+  //   if (result != null) {
+  //     final bytes = await result.readAsBytes();
+  //     final image = await decodeImageFromList(bytes);
+  //     final imageName = result.path.split('/').last;
+  //
+  //     final message = types.ImageMessage(
+  //       authorId: _user.id,
+  //       height: image.height.toDouble(),
+  //       id: const Uuid().v4(),
+  //       imageName: imageName,
+  //       size: bytes.length,
+  //       timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
+  //       uri: result.path,
+  //       width: image.width.toDouble(),
+  //     );
+  //
+  //     _addMessage(message: message);
+  //   } else {
+  //     // User canceled the picker
+  //   }
+  // }
 
   void _handleMessageTap(types.Message message) async {
     if (message is types.FileMessage) {
@@ -147,38 +142,63 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleSendPressed(types.PartialText message) {
+    //TODO crate the firebase suitable document and write into the database
     final textMessage = types.TextMessage(
       authorId: _user.id,
       id: const Uuid().v4(),
       text: message.text,
       timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
     );
-
-    _addMessage(textMessage);
-  }
-
-  void _loadMessages() async {
-    final response = await rootBundle.loadString('assets/messages.json');
-    final messages = (jsonDecode(response) as List)
-        .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
-        .toList();
-
-    setState(() {
-      _messages = messages;
-    });
+    //TODO get the chatId from somewhere
+    String chatId = widget.chatId;
+    //TODO get the receiver id from the clicked event
+    String receiverId = widget.receiverId;
+    ChatService.sendMessage(
+        message: textMessage, chatId: chatId, receiverId: receiverId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Chat(
-        messages: _messages,
-        onAttachmentPressed: _handleAtachmentPressed,
-        onMessageTap: _handleMessageTap,
-        onPreviewDataFetched: _handlePreviewDataFetched,
-        onSendPressed: _handleSendPressed,
-        user: _user,
-      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection("messages")
+              .where("chat_id", isEqualTo: widget.chatId)
+              .orderBy('timestamp', descending: false)
+              .snapshots(),
+          builder: (context, snapshot) {
+            List<types.Message> sentMessages = [];
+            if (snapshot.hasData) {
+              snapshot.data.docs.forEach((doc) {
+                print('Current sender_id => ${doc['sender_id']}');
+
+                Timestamp timestamp = doc['timestamp'] as Timestamp;
+                var dateTime = timestamp.toDate().millisecondsSinceEpoch / 1000;
+
+                var message = {
+                  'authorId': doc['sender_id'],
+                  'text': doc['content'],
+                  'timestamp': dateTime.floor(),
+                  'type': 'text',
+                  'status':
+                      'Status.delivered', //TODO change the messages type based on the message status
+                };
+                sentMessages.insert(0, types.Message.fromJson(message));
+              });
+            }
+
+            return snapshot.hasData
+                ? Chat(
+                    messages: sentMessages,
+                    onMessageTap: _handleMessageTap,
+                    onPreviewDataFetched: _handlePreviewDataFetched,
+                    onSendPressed: _handleSendPressed,
+                    user: _user,
+                  )
+                : Center(
+                    child: CircularProgressIndicator(),
+                  );
+          }),
     );
   }
 }

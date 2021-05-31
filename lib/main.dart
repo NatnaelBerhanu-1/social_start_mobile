@@ -10,6 +10,7 @@ import 'package:social_start/pages/message_page.dart';
 import 'package:social_start/pages/new_post_page.dart';
 import 'package:social_start/pages/profile_page.dart';
 import 'package:social_start/pages/signup_page.dart';
+import 'package:social_start/pages/splash_page.dart';
 import 'package:social_start/utils/constants.dart';
 
 void main() async {
@@ -17,6 +18,7 @@ void main() async {
 
   await Hive.initFlutter();
   await Hive.openLazyBox(kAppCacheDBName);
+  await Firebase.initializeApp();
   Hive.registerAdapter(UserAdapter());
   runApp(MyApp());
 }
@@ -75,19 +77,18 @@ class _MyAppState extends State<MyApp> {
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: kPrimaryLightColor))),
-      initialRoute: ChatPage.pageName,
-      // home: FutureBuilder(
-      //     future: _initialization,
-      //     builder: (context, snapshot) {
-      //       if (snapshot.hasError) {
-      //         // return error widget
-      //       }
-      //       if (snapshot.connectionState == ConnectionState.done) {
-      //         // return success widget
-      //         return SplashScreenPage(true);
-      //       }
-      //       return SplashScreenPage(false);
-      //     }),
+      home: FutureBuilder(
+          future: _initialization,
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              // return error widget
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              // return success widget
+              return SplashScreenPage(true);
+            }
+            return SplashScreenPage(false);
+          }),
     );
   }
 }

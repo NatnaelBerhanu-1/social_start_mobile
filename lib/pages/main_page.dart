@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:social_start/controllers/auth_controller.dart';
+import 'package:social_start/pages/chats_list.dart';
 import 'package:social_start/pages/home_page.dart';
 import 'package:social_start/pages/login_page.dart';
 import 'package:social_start/utils/constants.dart';
@@ -15,13 +16,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   int _selectedIndex = 0;
 
   List<Widget> pages = [
     HomePage(),
     HomePage(),
     HomePage(),
+    ChatList(),
     HomePage(),
   ];
   AuthController _authController = AuthController();
@@ -38,37 +39,45 @@ class _MainPageState extends State<MainPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: (){
+            onPressed: () {
               showDialog<void>(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext mContext){
-                  return AlertDialog(
-                    title: Text("Do you wan't to logout?"),
-                    actions: [
-                      TextButton(
-                        onPressed: (){
-                              Navigator.of(mContext).pop();
-                  },
-                        child: Text("No", ),
-                      ),
-                      TextButton(
-                        onPressed: (){
-                          Navigator.pushNamedAndRemoveUntil(context, LoginPage.pageName, (route) => false);
-                        },
-                        child: Text("Yes",style:TextStyle(color: Colors.black26),),
-                      )
-                    ],
-                  );
-                }
-              );
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (BuildContext mContext) {
+                    return AlertDialog(
+                      title: Text("Do you wan't to logout?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(mContext).pop();
+                          },
+                          child: Text(
+                            "No",
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, LoginPage.pageName, (route) => false);
+                          },
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(color: Colors.black26),
+                          ),
+                        )
+                      ],
+                    );
+                  });
               _authController.signOut();
             },
-            icon: Icon(Icons.logout,semanticLabel: "logout",),
+            icon: Icon(
+              Icons.logout,
+              semanticLabel: "logout",
+            ),
           )
         ],
       ),
-      body: SafeArea(child: HomePage()),
+      body: SafeArea(child: pages[_selectedIndex]),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         shape: CircularNotchedRectangle(),
@@ -80,15 +89,20 @@ class _MainPageState extends State<MainPage> {
             children: [
               _bottomNavItem(index: 0, icon: Icons.home, label: "Home"),
               _bottomNavItem(index: 1, icon: Icons.search, label: "Search"),
-              Expanded(child: SizedBox(),),
-              _bottomNavItem(index: 2, icon: Icons.video_call_rounded, label: "Videos"),
-              _bottomNavItem(index: 3, icon: Icons.notifications, label: "Notif"),
+              Expanded(
+                child: SizedBox(),
+              ),
+              _bottomNavItem(
+                  index: 2, icon: Icons.video_call_rounded, label: "Videos"),
+              _bottomNavItem(index: 3, icon: Icons.message, label: "Messages"),
+              _bottomNavItem(
+                  index: 4, icon: Icons.notifications, label: "Notif"),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
+        onPressed: () {
           Navigator.pushNamed(context, NewPostPage.pageName);
         },
         backgroundColor: kAccentColor,
@@ -99,7 +113,8 @@ class _MainPageState extends State<MainPage> {
           color: Colors.white,
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterDocked,
     );
   }
 
@@ -107,7 +122,7 @@ class _MainPageState extends State<MainPage> {
     Color color = _selectedIndex == index ? kPrimaryColor : Colors.black12;
     return Expanded(
       child: GestureDetector(
-        onTap: (){
+        onTap: () {
           setState(() {
             _selectedIndex = index;
           });
@@ -115,7 +130,10 @@ class _MainPageState extends State<MainPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color,),
+            Icon(
+              icon,
+              color: color,
+            ),
             // Text('$label', style: TextStyle(color: color),)
           ],
         ),

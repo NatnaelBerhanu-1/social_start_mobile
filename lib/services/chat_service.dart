@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:social_start/utils/parser.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 import 'base_service.dart';
 
@@ -19,12 +18,17 @@ class ChatService extends BaseService {
     return snapshot;
   }
 
-  Future<void> sendMessage(Message message) async {
-    //Assuming there is a document called messages that contains all the messages
-    return fireStore
-        .collection("messages")
-        .doc(message.message.id)
-        .set(BaseParser.messageToJson(message));
+  static void sendMessage(
+      {types.TextMessage message, String chatId, String receiverId}) {
+    FirebaseFirestore.instance.collection("messages").add({
+      'chat_id': chatId,
+      'content': message.text,
+      'receiver_id': receiverId,
+      'sender_id': message.authorId,
+      'timestamp': DateTime.now(),
+    }).then((savedVal) {
+      print('Message Sent');
+    });
   }
 
   Future<String> sendFile({File file}) async {
