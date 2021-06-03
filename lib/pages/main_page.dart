@@ -5,6 +5,7 @@ import 'package:social_start/controllers/auth_controller.dart';
 import 'package:social_start/pages/chats_list.dart';
 import 'package:social_start/pages/home_page.dart';
 import 'package:social_start/pages/login_page.dart';
+import 'package:social_start/pages/search_page.dart';
 import 'package:social_start/utils/constants.dart';
 
 import 'new_post_page.dart';
@@ -20,7 +21,7 @@ class _MainPageState extends State<MainPage> {
 
   List<Widget> pages = [
     HomePage(),
-    HomePage(),
+    SearchPage(),
     HomePage(),
     ChatList(),
     HomePage(),
