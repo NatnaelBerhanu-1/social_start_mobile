@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:social_start/models/post.dart';
 import 'package:social_start/models/user.dart';
 import 'package:social_start/pages/EditProfilePage.dart';
 import 'package:social_start/pages/login_page.dart';
 import 'package:social_start/pages/main_page.dart';
 import 'package:social_start/pages/new_post_page.dart';
+import 'package:social_start/pages/post_detail_page.dart';
 import 'package:social_start/pages/profile_page.dart';
 import 'package:social_start/pages/signup_page.dart';
 import 'package:social_start/pages/splash_page.dart';
@@ -33,6 +36,12 @@ class _MyAppState extends State<MyApp> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //     statusBarColor: kBackgroundColor,
+    //   statusBarBrightness: Brightness
+    //   ));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Social start',
@@ -50,15 +59,18 @@ class _MyAppState extends State<MyApp> {
           return MaterialPageRoute(builder: (context) => NewPostPage());
         }else if (settings.name == EditProfilePage.pageName){
           return MaterialPageRoute(builder: (context) => EditProfilePage());
+        }else if (settings.name == PostDetailPage.pageName){
+          PostDetailPageArgs pageArgs = settings.arguments as PostDetailPageArgs;
+          return MaterialPageRoute(builder: (context) => PostDetailPage(post: pageArgs.post, user: pageArgs.user));
         }
         return null;
       },
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-          brightness: Brightness.dark
+          brightness: Brightness.light,
         ),
           primaryColor: kPrimaryColor,
-          fontFamily: 'Roboto',
+          fontFamily: 'NanoSans',
           textTheme: TextTheme(
             bodyText2: TextStyle(
               color: Colors.black87,

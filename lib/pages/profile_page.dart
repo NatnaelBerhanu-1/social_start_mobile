@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:social_start/models/post.dart';
 import 'package:social_start/pages/EditProfilePage.dart';
 import 'package:social_start/utils/constants.dart';
@@ -10,6 +11,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //   statusBarColor: kBackgroundColor,
+    // ));
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),

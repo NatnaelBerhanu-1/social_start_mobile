@@ -11,7 +11,9 @@ class UserService extends BaseService {
   Future<User> getUser(String uid) async {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await fireStore.collection("users").doc(uid).get();
-    return User.fromJson(snapshot.data());
+    var user = User.fromJson(snapshot.data());
+    user.uid = snapshot.id;
+    return user;
   }
 
   Future<void> updateUserPosts(String uid, User user) async {
@@ -38,6 +40,41 @@ class UserService extends BaseService {
       //   transaction.update(documentReference, {"user": userUpdate});
       //   print("updated post");
       // });
+    });
+  }
+
+  Stream<DocumentSnapshot> getUserStream(String uid) {
+    return fireStore.collection("users").doc(uid).snapshots();
+  }
+
+  Future<void> followUser(followerId, userId) async{
+    fireStore.runTransaction((transaction) async {
+      try {
+        DocumentReference followerRef = fireStore.collection("users").doc(
+            followerId);
+        DocumentReference userRef = fireStore.collection("users").doc(userId);
+
+        DocumentSnapshot followerSnapshot = await transaction.get(followerRef);
+        DocumentSnapshot userSnapshot = await transaction.get(userRef);
+
+        List<dynamic> followerFollowing = followerSnapshot.get("following");
+        List<dynamic> userFollowers = followerSnapshot.get("followers");
+
+        followerFollowing.add(userId);
+        userFollowers.add(followerId);
+
+        transaction.update(followerRef, {
+          "total_following": followerSnapshot.get("total_following") + 1,
+          "following": followerFollowing
+        });
+        transaction.update(followerRef, {"following": followerFollowing});
+
+        transaction.update(userRef,
+            {"total_followers": userSnapshot.get("total_followers") + 1});
+        transaction.update(followerRef, {"following": followerFollowing});
+      }catch(error, stk){
+        throw Exception("some body handle this this");
+      }
     });
   }
 }

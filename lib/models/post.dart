@@ -8,8 +8,10 @@ class Post{
   String type = "picture";
   String userId;
   User user;
+  int likes = 0;
+  int comments = 0;
 
-  Post({this.id, this.fileUrl, this.caption, this.categoryId, this.userId, this.user, String type = "picture"});
+  Post({this.id, this.fileUrl, this.caption, this.categoryId, this.userId, this.user, this.type = "picture", this.comments = 0, this.likes = 0});
   factory Post.fromJson(Map<String, dynamic> json){
     return Post(
       id: json['id'],
@@ -17,7 +19,10 @@ class Post{
       caption: json['caption'],
       categoryId: json['category_id'],
       userId: json['user_id'],
-      type: json['type']
+      type: json['type'],
+      user: User.fromJson(json['user']),
+      likes: json['likes'],
+      comments: json['comments']
     );
   }
 
@@ -28,7 +33,9 @@ class Post{
       'category_id': this.categoryId,
       'user_id': this.userId,
       'type': this.type,
-      'user':this.user.toJson()
+      'user':this.user.toJson(),
+      'likes': likes,
+      'comments': comments
     };
   }
 }

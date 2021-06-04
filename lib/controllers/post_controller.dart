@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:social_start/models/comment.dart';
 import 'package:social_start/models/post.dart';
+import 'package:social_start/models/user_like.dart';
 import 'package:social_start/services/firebase_services.dart';
 
 class PostController{
@@ -12,5 +14,17 @@ class PostController{
 
   Future<QuerySnapshot> getPosts(){
     return _firebaseServices.readPosts();
+  }
+
+  Future<bool> addComment(Comment comment){
+    return _firebaseServices.addComment(comment);
+  }
+
+  Future<bool> likePost(UserLike userLike){
+    return _firebaseServices.likePost(userLike);
+  }
+
+  Future<bool> dislikePost(UserLike userLike){
+    return _firebaseServices.dislikePost(userLike);
   }
 }

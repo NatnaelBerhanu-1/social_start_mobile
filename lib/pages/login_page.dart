@@ -147,8 +147,9 @@ class _LoginPageState extends State<LoginPage> {
                                     var appCacheBox = Hive.lazyBox(kAppCacheDBName);
                                     appCacheBox.put("user", user);
                                     Navigator.pushNamedAndRemoveUntil(context, MainPage.pageName, (route) => false);
-                                  }catch(e){
-                                    // print("error: "+e.message);
+                                  }catch(e, stc){
+                                    print("error: $e");
+                                    print(stc);
                                     Navigator.pop(context);
                                     Utility.showSnackBar(context, "Login failed, try again");
                                   }
