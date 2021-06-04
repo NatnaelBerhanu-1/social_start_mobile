@@ -142,10 +142,11 @@ class _SignUpPageState extends State<SignUpPage> {
                               validator: (value){
                                 if(value == null || value.isEmpty){
                                   return 'This field is required';
-                                }else if(value.length < 8){
+                                }
+                                if(value.length < 8){
                                   return 'Minimum length must be 8';
                                 }
-                                else if(matches(value, RegExp('''^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@\$%^&*-]).{8,}\$''').pattern)){
+                                if(matches(value, RegExp('''^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@\$%^&*-]).{8,}\$''').pattern)){
                                   return 'Password must have at least one uppercase letter, one lowercase letter, one digit and one special character.';
                                 }
                                 return null;

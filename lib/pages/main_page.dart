@@ -30,55 +30,50 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white,
+    ));
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: kPrimaryColor,
-        leading: null,
-        title: Text('SocialStart'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {
-              showDialog<void>(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (BuildContext mContext) {
-                    return AlertDialog(
-                      title: Text("Do you wan't to logout?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(mContext).pop();
-                          },
-                          child: Text(
-                            "No",
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, LoginPage.pageName, (route) => false);
-                          },
-                          child: Text(
-                            "Yes",
-                            style: TextStyle(color: Colors.black26),
-                          ),
-                        )
-                      ],
-                    );
-                  });
-              _authController.signOut();
-            },
-            icon: Icon(
-              Icons.logout,
-              semanticLabel: "logout",
-            ),
-          )
-        ],
-      ),
-      body: SafeArea(child: pages[_selectedIndex]),
+      // appBar: AppBar(
+      //   backgroundColor: kPrimaryColor,
+      //   leading: null,
+      //   title: Text('SocialStart'),
+      //   centerTitle: true,
+      //   actions: [
+      //     IconButton(
+      //       onPressed: (){
+      //         showDialog<void>(
+      //           context: context,
+      //           barrierDismissible: false,
+      //           builder: (BuildContext mContext){
+      //             return AlertDialog(
+      //               title: Text("Do you wan't to logout?"),
+      //               actions: [
+      //                 TextButton(
+      //                   onPressed: (){
+      //                         Navigator.of(mContext).pop();
+      //             },
+      //                   child: Text("No", ),
+      //                 ),
+      //                 TextButton(
+      //                   onPressed: (){
+      //                     Navigator.pushNamedAndRemoveUntil(context, LoginPage.pageName, (route) => false);
+      //                   },
+      //                   child: Text("Yes",style:TextStyle(color: Colors.black26),),
+      //                 )
+      //               ],
+      //             );
+      //           }
+      //         );
+      //         _authController.signOut();
+      //       },
+      //       icon: Icon(Icons.logout,semanticLabel: "logout",),
+      //     )
+      //   ],
+      // ),
+      body: SafeArea(child: HomePage()),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         shape: CircularNotchedRectangle(),
