@@ -4,10 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:social_start/controllers/auth_controller.dart';
 import 'package:social_start/pages/chats_list.dart';
 import 'package:social_start/pages/home_page.dart';
-import 'package:social_start/pages/login_page.dart';
 import 'package:social_start/pages/search_page.dart';
 import 'package:social_start/utils/constants.dart';
 
+import 'login_page.dart';
 import 'new_post_page.dart';
 
 class MainPage extends StatefulWidget {

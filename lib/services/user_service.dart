@@ -16,8 +16,12 @@ class UserService extends BaseService {
     return user;
   }
 
-  Future<QuerySnapshot> searchUser({String param}) async {
-    return FirebaseFirestore.instance.collection('users').get();
+  Future<QuerySnapshot> searchUser({String value}) async {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .where('first_name', isGreaterThanOrEqualTo: value)
+        .where('first_name', isLessThan: value + 'z')
+        .get();
   }
 
   Future<void> updateUserPosts(String uid, User user) async {
