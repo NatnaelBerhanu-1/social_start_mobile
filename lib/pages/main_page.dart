@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
     SearchPage(),
     HomePage(),
     ChatList(),
-    HomePage(),
+    // HomePage(),
   ];
   AuthController _authController = AuthController();
 
@@ -73,7 +73,7 @@ class _MainPageState extends State<MainPage> {
       //     )
       //   ],
       // ),
-      body: SafeArea(child: HomePage()),
+      body: SafeArea(child:pages[_selectedIndex]),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
         shape: CircularNotchedRectangle(),
@@ -91,8 +91,8 @@ class _MainPageState extends State<MainPage> {
               _bottomNavItem(
                   index: 2, icon: Icons.video_call_rounded, label: "Videos"),
               _bottomNavItem(index: 3, icon: Icons.message, label: "Messages"),
-              _bottomNavItem(
-                  index: 4, icon: Icons.notifications, label: "Notif"),
+              // _bottomNavItem(
+              //     index: 4, icon: Icons.notifications, label: "Notif"),
             ],
           ),
         ),
