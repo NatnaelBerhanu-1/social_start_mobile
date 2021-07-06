@@ -23,9 +23,14 @@ class User {
   String relationShipStatus;
   int totalFollowing;
   int totalFollowers;
+  bool blocked = false;
   List<dynamic> likedPosts;
   List<dynamic> following;
   List<dynamic> followers;
+  SocialPoint socialPoint = SocialPoint(
+    permanent: 0,
+    daily: 0,
+  );
 
   User(
       {this.uid,
@@ -38,11 +43,14 @@ class User {
       this.bannerUrl,
       this.profileUrl,
       this.relationShipStatus,
-      this.likedPosts,
-      this.totalFollowers,
-      this.totalFollowing,
-      this.followers,
-      this.following});
+      this.likedPosts = const [],
+      this.totalFollowers = 0,
+      this.totalFollowing = 0,
+      this.followers = const [],
+      this.following = const [],
+      this.socialPoint,
+        this.blocked = false
+      });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -58,7 +66,27 @@ class User {
       totalFollowers: json['total_followers'],
       totalFollowing: json['total_following'],
       followers: json['followers'],
-      following: json['following']
+      following: json['following'],
+      socialPoint: SocialPoint.fromJson(json['social_point']),
+      blocked: json['blocked']
+    );
+  }
+
+  factory User.forPost(Map<String, dynamic> json){
+    return User(
+      firstName: json['first_name'],
+      lastName: json['last_name'],
+      email: json['email'],
+      bio: json['bio'],
+      paymentMethod: json['payment_method'],
+      bannerUrl: json['banner_url'],
+      profileUrl: json['profile_url'],
+      relationShipStatus: json['relationship_status'],
+      likedPosts: json['liked_posts'],
+      totalFollowers: json['total_followers'],
+      totalFollowing: json['total_following'],
+      followers: json['followers'],
+      following: json['following'],
     );
   }
 
@@ -75,7 +103,32 @@ class User {
       'total_followers':this.totalFollowers,
       'total_following':this.totalFollowing,
       'followers': this.followers,
-      'following': this.following
+      'following': this.following,
+      'liked_posts': this.likedPosts,
+      'social_point': this.socialPoint.toJson(),
+      'blocked': this.blocked
     };
+  }
+}
+
+class SocialPoint {
+  int daily = 0;
+  int permanent = 0;
+
+  SocialPoint({this.daily=0, this.permanent=0});
+
+  Map<String, dynamic> toJson(){
+    return {
+      "daily": daily,
+      "total": permanent,
+    };
+  }
+
+  factory SocialPoint.fromJson(Map<String, dynamic> json){
+    print("socialPointJson: $json");
+    return SocialPoint(
+      daily: json['daily'],
+      permanent: json['total'],
+    );
   }
 }

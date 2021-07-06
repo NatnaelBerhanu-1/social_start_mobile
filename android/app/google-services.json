@@ -1,71 +1,41 @@
 {
   "project_info": {
-    "project_number": "137467948611",
-    "firebase_url": "https://hotelslisting.firebaseio.com",
-    "project_id": "hotelslisting",
-    "storage_bucket": "hotelslisting.appspot.com"
+    "project_number": "1037105626169",
+    "project_id": "socialstart-e4d56",
+    "storage_bucket": "socialstart-e4d56.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:137467948611:android:1fd5766761a68baeceaef6",
-        "android_client_info": {
-          "package_name": "com.natiberhanu.zon"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "137467948611-sp8a19nmcjkmsi1kiceq305uesmmpap2.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.natiberhanu.zon",
-            "certificate_hash": "b929d4e50745a0671ed079dbdba936c43e2cbd21"
-          }
-        },
-        {
-          "client_id": "137467948611-ce6h25qtjsogdscpuq0eiv1daa2c461j.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAJYcp-iLFYONKcI2WypPNngv_yPlbO54I"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "137467948611-ce6h25qtjsogdscpuq0eiv1daa2c461j.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:137467948611:android:47c1782ca93c7e7dceaef6",
+        "mobilesdk_app_id": "1:1037105626169:android:71443e9aabd82d221821e8",
         "android_client_info": {
           "package_name": "com.natnaelberhanu.social_start"
         }
       },
       "oauth_client": [
         {
-          "client_id": "137467948611-ce6h25qtjsogdscpuq0eiv1daa2c461j.apps.googleusercontent.com",
+          "client_id": "1037105626169-bcet505fgj4uepsfck1jg9ekrrju1tj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.natnaelberhanu.social_start",
+            "certificate_hash": "4b7633da225b14a59d85f49a8ea8835466e967cd"
+          }
+        },
+        {
+          "client_id": "1037105626169-97c43f594mpe4qor4i9eedrh1dm2hm79.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAJYcp-iLFYONKcI2WypPNngv_yPlbO54I"
+          "current_key": "AIzaSyDraajlUhnGinqAo4quRpjuk1dNMVSzZOc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "137467948611-ce6h25qtjsogdscpuq0eiv1daa2c461j.apps.googleusercontent.com",
+              "client_id": "1037105626169-97c43f594mpe4qor4i9eedrh1dm2hm79.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

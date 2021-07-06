@@ -4,14 +4,18 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:open_file/open_file.dart';
 import 'package:social_start/controllers/auth_controller.dart';
+import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/services/chat_service.dart';
+import 'package:social_start/utils/utility.dart';
 import 'package:uuid/uuid.dart';
+import 'package:social_start/models/chat.dart' as lChat;
 
 class ChatPage extends StatefulWidget {
   final String chatId;
   final String receiverId;
+  final lChat.Chat chat;
   final _currentUser = AuthController().getCurrentUser().uid;
-  ChatPage({this.receiverId, this.chatId});
+  ChatPage({@required this.chat, @required this.receiverId,@required this.chatId});
   static final String pageName = "chat";
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -20,10 +24,12 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   List<types.Message> _messages = [];
   var _user;
+  UserController _userController = UserController();
 
   @override
   void initState() {
     _user = types.User(id: widget._currentUser);
+    chatId = widget.chatId;
     super.initState();
   }
 
@@ -120,6 +126,7 @@ class _ChatPageState extends State<ChatPage> {
   //     // User canceled the picker
   //   }
   // }
+  String chatId;
 
   void _handleMessageTap(types.Message message) async {
     if (message is types.FileMessage) {
@@ -141,7 +148,7 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  void _handleSendPressed(types.PartialText message) {
+  void _handleSendPressed(types.PartialText message) async {
     //TODO crate the firebase suitable document and write into the database
     final textMessage = types.TextMessage(
       authorId: _user.id,
@@ -150,20 +157,27 @@ class _ChatPageState extends State<ChatPage> {
       timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
     );
     //TODO get the chatId from somewhere
-    String chatId = widget.chatId;
     //TODO get the receiver id from the clicked event
     String receiverId = widget.receiverId;
+    if(chatId == ""){
+      var chId = await _userController.createChat(widget.chat);
+      setState(() {
+        chatId = chId;
+      });
+    }
+
     ChatService.sendMessage(
         message: textMessage, chatId: chatId, receiverId: receiverId);
   }
 
   @override
   Widget build(BuildContext context) {
+    print("chatId: ${widget.chatId}");
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance
               .collection("messages")
-              .where("chat_id", isEqualTo: widget.chatId)
+              .where("chat_id", isEqualTo: chatId)
               .orderBy('timestamp', descending: false)
               .snapshots(),
           builder: (context, snapshot) {

@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:social_start/models/user.dart';
+import 'package:social_start/pages/profile_page.dart';
 import 'package:social_start/services/user_service.dart';
 import 'package:social_start/utils/constants.dart';
 
@@ -12,8 +14,8 @@ class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchEditingController =
       TextEditingController();
   final _userService = UserService();
-  var _users = [];
-
+  List<User> _users = [];
+  String _searchText = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,16 +24,21 @@ class _SearchPageState extends State<SearchPage> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Card(
+            margin: EdgeInsets.zero,
             elevation: 1,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero
+            ),
             shadowColor: Colors.grey.withOpacity(0.4),
             child: Row(
               children: [
-                IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_outlined,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {}),
+                // IconButton(
+                //     icon: Icon(
+                //       Icons.arrow_back_outlined,
+                //       color: Colors.grey,
+                //     ),
+                //     onPressed: () {}),
+                SizedBox(width: 10,),
                 Expanded(
                   child: Container(
                     height: 40,
@@ -42,6 +49,9 @@ class _SearchPageState extends State<SearchPage> {
                     child: TextField(
                       controller: _searchEditingController,
                       onChanged: (value) async {
+                        setState(() {
+                          _searchText = value;
+                        });
                         if (value.trim() == '') {
                           setState(() {
                             _users = [];
@@ -51,15 +61,29 @@ class _SearchPageState extends State<SearchPage> {
                           var searchResult =
                               await _userService.searchUser(value: value);
                           setState(() {
-                            _users = [...searchResult.docs];
+                            List<User> users = [];
+                            searchResult.docs.forEach((e){
+                              var user = User.fromJson(e.data());
+                              user.uid = e.id;
+                              users.add(user);
+                            });
+                            _users = users;
                           });
                         }
                       },
                       decoration: InputDecoration(
-                          suffixIcon: Icon(
-                            Icons.close,
-                            size: 20,
-                          ),
+                          suffixIcon: _searchText.length > 0 ? GestureDetector(
+                            onTap: (){
+                              _searchEditingController.clear();
+                              setState(() {
+                                _searchText = "";
+                              });
+                            },
+                            child: Icon(
+                              Icons.close,
+                              size: 20,
+                            ),
+                          ):null,
                           prefixIcon: Icon(
                             Icons.search,
                             color: Colors.grey,
@@ -72,12 +96,14 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ),
                 ),
-                IconButton(
-                    icon: Icon(
-                      Icons.tune,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () {}),
+                SizedBox(width: 10,),
+
+                // IconButton(
+                //     icon: Icon(
+                //       Icons.tune,
+                //       color: Colors.grey,
+                //     ),
+                //     onPressed: () {}),
               ],
             ),
           ),
@@ -90,9 +116,11 @@ class _SearchPageState extends State<SearchPage> {
                         return Column(
                           children: [
                             ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.pushNamed(context, ProfilePage.pageName, arguments: _users[index].uid);
+                              },
                               title: Text(
-                                'John Doe',
+                                '${_users[index].firstName} ${_users[index].lastName}',
                                 style: TextStyle(
                                   fontSize: 16,
                                   letterSpacing: 1.01,
@@ -106,7 +134,7 @@ class _SearchPageState extends State<SearchPage> {
                                     height: 5,
                                   ),
                                   Text(
-                                    'Divorced',
+                                    _users[index].relationShipStatus == null ? '------' : '${_users[index].relationShipStatus}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,
@@ -118,7 +146,7 @@ class _SearchPageState extends State<SearchPage> {
                                   Row(
                                     children: [
                                       Text(
-                                        '1000 Followers',
+                                        '${_users[index].totalFollowers} Followers',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.grey,

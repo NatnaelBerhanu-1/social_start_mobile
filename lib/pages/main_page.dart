@@ -9,6 +9,7 @@ import 'package:social_start/utils/constants.dart';
 
 import 'login_page.dart';
 import 'new_post_page.dart';
+import 'videos_page.dart';
 
 class MainPage extends StatefulWidget {
   static final String pageName = "main";
@@ -22,7 +23,7 @@ class _MainPageState extends State<MainPage> {
   List<Widget> pages = [
     HomePage(),
     SearchPage(),
-    HomePage(),
+    VideosPage(),
     ChatList(),
     // HomePage(),
   ];
@@ -30,49 +31,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-    ));
+
     return Scaffold(
       backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   backgroundColor: kPrimaryColor,
-      //   leading: null,
-      //   title: Text('SocialStart'),
-      //   centerTitle: true,
-      //   actions: [
-      //     IconButton(
-      //       onPressed: (){
-      //         showDialog<void>(
-      //           context: context,
-      //           barrierDismissible: false,
-      //           builder: (BuildContext mContext){
-      //             return AlertDialog(
-      //               title: Text("Do you wan't to logout?"),
-      //               actions: [
-      //                 TextButton(
-      //                   onPressed: (){
-      //                         Navigator.of(mContext).pop();
-      //             },
-      //                   child: Text("No", ),
-      //                 ),
-      //                 TextButton(
-      //                   onPressed: (){
-      //                     Navigator.pushNamedAndRemoveUntil(context, LoginPage.pageName, (route) => false);
-      //                   },
-      //                   child: Text("Yes",style:TextStyle(color: Colors.black26),),
-      //                 )
-      //               ],
-      //             );
-      //           }
-      //         );
-      //         _authController.signOut();
-      //       },
-      //       icon: Icon(Icons.logout,semanticLabel: "logout",),
-      //     )
-      //   ],
-      // ),
       body: SafeArea(child:pages[_selectedIndex]),
       bottomNavigationBar: BottomAppBar(
         color: Colors.white,
@@ -101,12 +62,13 @@ class _MainPageState extends State<MainPage> {
         onPressed: () {
           Navigator.pushNamed(context, NewPostPage.pageName);
         },
-        backgroundColor: kAccentColor,
+        backgroundColor: kPrimaryColor,
         elevation: 2.0,
         tooltip: "Post",
         child: Icon(
-          Icons.add,
+          Icons.camera,
           color: Colors.white,
+          size: 40.0,
         ),
       ),
       floatingActionButtonLocation:

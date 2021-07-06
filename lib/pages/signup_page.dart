@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:social_start/controllers/auth_controller.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/user.dart' as usr;
+import 'package:social_start/models/user.dart';
 import 'package:social_start/pages/login_page.dart';
 import 'package:social_start/utils/constants.dart';
 import 'package:social_start/utils/utility.dart';
@@ -30,9 +31,6 @@ class _SignUpPageState extends State<SignUpPage> {
   
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: kPrimaryColor,
-    ));
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
@@ -215,6 +213,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                       UserController userController = UserController();
                                       String uid = await authController.signUp(_newUser.email, _newUser.password);
                                       _newUser.uid = uid;
+                                      _newUser.socialPoint = SocialPoint(
+                                        permanent: 0,
+                                        daily: 0,
+                                      );
                                       await userController.createUser(user:_newUser);
                                       print("uid: $uid");
                                       Navigator.of(context).pushNamedAndRemoveUntil(MainPage.pageName, (Route<dynamic> route) => false);
@@ -222,13 +224,17 @@ class _SignUpPageState extends State<SignUpPage> {
                                       if (e.code == 'weak-password') {
                                         print('The password provided is too weak.');
                                         Utility.showSnackBar(_scaffoldKey.currentContext, "Weak Password");
+                                        Navigator.pop(context);
                                       } else if (e.code == 'email-already-in-use') {
                                         print('The account already exists for that email.');
                                         Utility.showSnackBar(_scaffoldKey.currentContext, "Email in use");
+                                        Navigator.pop(context);
                                       }
-                                    } catch (e) {
+                                    } catch (e,stkTrc) {
                                       print(e);
+                                      print(stkTrc);
                                       Utility.showSnackBar(_scaffoldKey.currentContext, "Failed creating account");
+                                      Navigator.pop(context);
                                     }
                                   }
                                   // Navigator.pushNamedAndRemoveUntil(context, MainPage.pageName, (Route<dynamic> route)=>false);

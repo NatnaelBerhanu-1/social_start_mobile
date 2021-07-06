@@ -12,8 +12,8 @@ class PostController{
     return _firebaseServices.createPost(post: post, file: file, extension: extension);
   }
 
-  Future<QuerySnapshot> getPosts(){
-    return _firebaseServices.readPosts();
+  Future<QuerySnapshot> getPosts(String type, String orderBy){
+    return _firebaseServices.readPosts(type, orderBy);
   }
 
   Future<bool> addComment(Comment comment){
@@ -26,5 +26,17 @@ class PostController{
 
   Future<bool> dislikePost(UserLike userLike){
     return _firebaseServices.dislikePost(userLike);
+  }
+
+  Future<void> countPostView(String postId){
+    return _firebaseServices.countPostView(postId);
+  }
+
+  Future<QuerySnapshot> getUserPosts(String userId) {
+    return _firebaseServices.getUserPosts(userId);
+  }
+
+  Future<void> awardPoint(String postId) async{
+    return await _firebaseServices.awardPoint(postId);
   }
 }

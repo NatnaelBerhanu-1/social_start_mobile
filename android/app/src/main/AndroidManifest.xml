@@ -1,8 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.natnaelberhanu.social_start">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="com.android.vending.BILLING" />
+
     <application
-        android:label="social_start"
+        android:label="SocailStart"
         android:icon="@mipmap/ic_launcher"
        android:requestLegacyExternalStorage="true"
        >

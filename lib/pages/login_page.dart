@@ -28,9 +28,6 @@ class _LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: kPrimaryColor,
-    ));
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -142,7 +139,6 @@ class _LoginPageState extends State<LoginPage> {
                                   UserController userController = UserController();
                                   try{
                                     String uid = await authController.signIn(_email, _password);
-                                    // TODO: get user from fireStore
                                     usr.User user = await userController.getUser(uid);
                                     var appCacheBox = Hive.lazyBox(kAppCacheDBName);
                                     appCacheBox.put("user", user);

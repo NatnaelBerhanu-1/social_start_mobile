@@ -35,6 +35,7 @@ class FirebaseServices{
         lastName: user.lastName,
         profileUrl: user.profileUrl
       );
+      post.createdAt = Timestamp.now();
       String postId = uuid.v4();
       await _fireStore.collection("posts").doc(postId).set(
           post.toJson())
@@ -51,8 +52,9 @@ class FirebaseServices{
     }
   }
 
-  Future<QuerySnapshot> readPosts() async {
-    var postsRef =  await _fireStore.collection("posts").get().onError((error, stackTrace){
+  Future<QuerySnapshot> readPosts(String type, String orderBy) async {
+    print(orderBy);
+    var postsRef =  await _fireStore.collection("posts").where("type", isEqualTo: type).orderBy(orderBy, descending: true).get().onError((error, stackTrace){
       throw Exception("failed to fetch posts");
     });
     return postsRef;
@@ -97,5 +99,44 @@ class FirebaseServices{
       transaction.update(postRef, {"likes": newLikeCount});
     });
     return true;
+  }
+
+  Future<void> countPostView(String postId) async {
+    DocumentReference postRef = _fireStore.collection("posts").doc(postId);
+    DocumentSnapshot postDoc = await postRef.get();
+    int view = postDoc.get("views");
+    postRef.update({"views": view+1});
+  }
+
+  Future<QuerySnapshot> getUserPosts(String userId) async {
+    var postsRef =  await _fireStore.collection("posts").where("user_id", isEqualTo: userId).get();
+    return postsRef;
+  }
+
+  Future<void> awardPoint(String postId) async{
+    await _fireStore.runTransaction((transaction)async{
+      DocumentReference postRef = _fireStore.collection("posts").doc(postId);
+      DocumentReference userRef = _fireStore.collection("users").doc(Utility.getUserId());
+      DocumentSnapshot<Map<String, dynamic>> postDoc = await transaction.get(postRef);
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await transaction.get(userRef);
+      usr.User user  =  usr.User.fromJson(userDoc.data());
+      if((user.socialPoint.daily + user.socialPoint.permanent) <=  0){
+        throw Exception("Insufficient Social Point");
+      }
+      if(user.socialPoint.daily >= 1){
+      transaction.update(userRef, {"social_point": {"daily":user.socialPoint.daily - 1, "total":user.socialPoint.permanent}});
+      }else if(user.socialPoint.daily == 0 && user.socialPoint.permanent >=1){
+        transaction.update(userRef, {"social_point": {"daily":user.socialPoint.daily , "total":user.socialPoint.permanent-1}});
+      }
+      transaction.update(postRef,{"points":  postDoc.get("points") + 1});
+    });
+  }
+
+  Future<bool> checkUser(email) async{
+    QuerySnapshot querySnapshot = await _fireStore.collection("users").where("email", isEqualTo: email).get();
+    if(querySnapshot.docs.length > 0){
+      return true;
+    }
+    return false;
   }
 }

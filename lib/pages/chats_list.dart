@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:social_start/controllers/auth_controller.dart';
 import 'package:social_start/pages/message_page.dart';
 import 'package:social_start/services/base_service.dart';
+import 'package:social_start/widgets/custom_appbar.dart';
 
 class ChatList extends StatelessWidget {
   final _currentUser = AuthController().getCurrentUser().uid;
@@ -51,56 +52,62 @@ class ChatList extends StatelessWidget {
                   print('Combined $combinedChats');
 
                   return SafeArea(
-                    child: ListView.builder(
-                        itemCount: combinedChats.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            contentPadding: EdgeInsets.all(5),
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue.withOpacity(0.3),
-                              radius: 40,
-                              child: Center(
-                                child: Icon(
-                                  Icons.person,
-                                  color: Colors.black.withOpacity(0.5),
-                                  size: 40,
+                    child: Column(
+                      children: [
+                        CustomAppBar(showBackArrow: false, title: "Chats"),
+                        ListView.builder(
+                          shrinkWrap: true,
+                            itemCount: combinedChats.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                contentPadding: EdgeInsets.all(5),
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.blue.withOpacity(0.3),
+                                  radius: 40,
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.black.withOpacity(0.5),
+                                      size: 40,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            title: Text(
-                              combinedChats[index]['user1_name'],
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.1,
-                              ),
-                            ),
-                            subtitle: Text(
-                              'Some Text sent!',
-                              style: TextStyle(
-                                fontSize: 14,
-                                letterSpacing: 1.1,
-                              ),
-                            ),
-                            onTap: () {
-                              print(
-                                  'sender => ${combinedChats[index]['sender']}');
-                              print(
-                                  'chat id => ${combinedChats[index]['chat_id']}');
-                              var receiverId = combinedChats[index]['sender']
-                                  ? combinedChats[index]['user2_id']
-                                  : combinedChats[index]['user2_id'];
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (ctx) => ChatPage(
-                                            chatId: combinedChats[index]
-                                                ['chat_id'],
-                                            receiverId: receiverId,
-                                          )));
-                            },
-                          );
-                        }),
+                                title: Text(
+                                  combinedChats[index]['user1_name'],
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.1,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'Some Text sent!',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    letterSpacing: 1.1,
+                                  ),
+                                ),
+                                onTap: () {
+                                  print(
+                                      'sender => ${combinedChats[index]['sender']}');
+                                  print(
+                                      'chat id => ${combinedChats[index]['chat_id']}');
+                                  var receiverId = combinedChats[index]['sender']
+                                      ? combinedChats[index]['user2_id']
+                                      : combinedChats[index]['user2_id'];
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (ctx) => ChatPage(
+                                                chatId: combinedChats[index]
+                                                    ['chat_id'],
+                                                receiverId: receiverId,
+                                              )));
+                                },
+                              );
+                            }),
+                      ],
+                    ),
                   );
                 }
                 return Center(

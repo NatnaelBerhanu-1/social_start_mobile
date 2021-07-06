@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -38,6 +38,13 @@ dependencies:
   flutter_chat_ui: ^1.0.5
   file_picker: ^3.0.2+2
   open_file: ^3.2.1
+  location: ^4.1.1
+  chewie: ^1.2.1
+  http: ^0.13.3
+  http_auth: ^1.0.0
+  webview_flutter: ^2.0.4
+  provider: ^5.0.0
+  in_app_purchase: ^1.0.6
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -85,17 +92,6 @@ flutter:
         - asset: assets/fonts/Roboto-Regular.ttf
         - asset: assets/fonts/Roboto-Bold.ttf
         - asset: assets/fonts/Roboto-Black.ttf
-    - family: NanoSans
-      fonts:
-        - asset: assets/fonts/nano/NotoSansJP-Black.otf
-        - asset: assets/fonts/nano/NotoSansJP-Bold.otf
-        - asset: assets/fonts/nano/NotoSansJP-Light.otf
-        - asset: assets/fonts/nano/NotoSansJP-Medium.otf
-        - asset: assets/fonts/nano/NotoSansJP-Regular.otf
-        - asset: assets/fonts/nano/NotoSansJP-Thin.otf
-    - family: Montez
-      fonts:
-        - asset: assets/fonts/motez/Montez-Regular.ttf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

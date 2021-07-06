@@ -27,12 +27,14 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
+  PostController _postController = PostController();
 
   Stream<QuerySnapshot> _commentsRef;
 
   @override
   void initState() {
     _commentsRef = FirebaseFirestore.instance.collection("comments").where("post_id", isEqualTo: widget.post.id).snapshots();
+    _postController.countPostView(widget.post.id);
     super.initState();
   }
 
