@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/checkout.dart';
 import 'package:social_start/pages/paypal_payment_page.dart';
 import 'package:social_start/utils/constants.dart';
+import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
 import 'package:social_start/widgets/custom_appbar.dart';
 
@@ -17,7 +19,7 @@ class PurchaseSocialPointPage extends StatefulWidget {
 }
 
 class _PurchaseSocialPointPageState extends State<PurchaseSocialPointPage> {
-  UserController _userController = UserController();
+  UserController _userController = getIt<UserController>();
   double totalPrice =  0.0;
   int amount = 0;
 
@@ -102,6 +104,7 @@ class _PurchaseSocialPointPageState extends State<PurchaseSocialPointPage> {
                                       print("Order id: $number");
                                       if (number != null) {
                                         Utility.showProgressAlertDialog(context, "Please wait");
+                                        EasyLoading.show(status:"please wait...");
                                         _userController
                                         .purchaseSocialPoint(amount)
                                             .onError((error, stackTrace) {

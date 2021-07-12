@@ -5,6 +5,8 @@ import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/comment.dart';
 import 'package:social_start/utils/constants.dart';
 import 'package:social_start/utils/utility.dart';
+import 'package:social_start/viewmodels/user_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class AddComment extends StatefulWidget {
   final String postId;
@@ -19,11 +21,10 @@ class AddComment extends StatefulWidget {
 class _AddCommentState extends State<AddComment> {
   PostController _postController = PostController();
   String comment= "";
-  UserController _userController = UserController();
   TextEditingController _controller = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext buildContext) {
     // TODO: implement build
     return Container(
       height: 70,
@@ -59,8 +60,8 @@ class _AddCommentState extends State<AddComment> {
             ),
             child: Center(
               child: IconButton(
-                onPressed: () async {
-                  var user = await _userController.getUser();
+                onPressed: () {
+                  var user = context.read<UserViewModel>().user;
                   if(comment.isNotEmpty){
                     _postController.addComment(Comment(
                       postId: widget.postId,

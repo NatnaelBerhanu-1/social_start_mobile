@@ -5,10 +5,10 @@ class CircularLogoWidget extends StatelessWidget{
   Widget build(BuildContext context) {
     // TODO: implement build
     return Container(
-        width: 80,
-        height: 80,
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
-            color: Colors.blueGrey,
+            color: Colors.white,
             borderRadius: BorderRadius.all(
                 Radius.circular(100)
             )

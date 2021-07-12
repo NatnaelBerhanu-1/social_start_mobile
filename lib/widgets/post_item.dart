@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fbauth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:social_start/controllers/post_controller.dart';
@@ -12,6 +13,7 @@ import 'package:social_start/models/user_like.dart';
 import 'package:social_start/pages/message_page.dart';
 import 'package:social_start/pages/profile_page.dart';
 import 'package:social_start/utils/constants.dart';
+import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
 import 'package:video_player/video_player.dart';
 
@@ -33,7 +35,7 @@ class PostItem extends StatefulWidget {
 
 class _PostItemState extends State<PostItem> {
   PostController _postController = PostController();
-  UserController _userController = UserController();
+  UserController _userController = getIt<UserController>();
 
   VideoPlayerController _videoPlayerController;
   ChewieController _chewieController;
@@ -105,34 +107,29 @@ class _PostItemState extends State<PostItem> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            padding: EdgeInsets.all(2.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(40.0),
-              border: Border.all(
-                color: kAccentColor,
-                width: 2.0
-              )
-            ),
-            child: ClipRRect(
+          GestureDetector(
+            onTap: (){
+                print(widget.post.userId);
+                Navigator.pushNamed(context, ProfilePage.pageName, arguments: widget.post.userId);
+              },
+            child: Container(
+              padding: EdgeInsets.all(2.0),
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40.0),
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.pushNamed(context, ProfilePage.pageName, arguments: widget.post.userId);
-                  },
-                  child: CachedNetworkImage(
+                border: Border.all(
+                  color: kAccentColor,
+                  width: 2.0
+                )
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40.0),
+                child: CachedNetworkImage(
                       imageUrl: widget.post.user.profileUrl,
                       width: 40,
                       height: 40,
                       fit: BoxFit.cover),
-                )
-                // Image.asset(
-                //   'assets/images/sample_profile_pic.jpg',
-                //   width: 40,
-                //   height: 40,
-                //   fit: BoxFit.cover,
-                // ),
-                ),
+              ),
+            ),
           ),
           SizedBox(
             width: 10,

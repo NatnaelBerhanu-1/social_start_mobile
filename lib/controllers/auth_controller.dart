@@ -16,7 +16,7 @@ class AuthController{
   }
 
   Future<void> signOut() async {
-    return _firebaseAuthService.signOut();
+    return await _firebaseAuthService.signOut();
   }
 
   void sendEmailVerification() {

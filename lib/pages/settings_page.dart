@@ -1,15 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:social_start/controllers/auth_controller.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/user.dart';
 import 'package:social_start/pages/purchase_products_page.dart';
 import 'package:social_start/pages/purchase_socialpoint.dart';
 import 'package:social_start/utils/constants.dart';
+import 'package:social_start/viewmodels/user_viewmodel.dart';
 import 'package:social_start/widgets/custom_appbar.dart';
 
-import 'EditProfilePage.dart';
+import 'edit_profile_page.dart';
 import 'change_password_page.dart';
 import 'login_page.dart';
 
@@ -22,13 +24,8 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   AuthController _authController = AuthController();
-  UserController _userController = UserController();
-
-  var userFuture;
-
   @override
   void initState() {
-    userFuture = _userController.getUser();
     super.initState();
   }
 
@@ -42,12 +39,11 @@ class _SettingsPageState extends State<SettingsPage> {
             SingleChildScrollView(
               child: Column(
                 children: [
-                  FutureBuilder(
-                    future: userFuture,
-                    builder: (context, AsyncSnapshot<User> snapshot) {
+                  Consumer<UserViewModel>(
+                    builder: (context, userViewModel, child) {
                       var socialPoint = "----";
-                      if(snapshot.hasData){
-                        socialPoint = "${snapshot.data.socialPoint.daily + snapshot.data.socialPoint.permanent}";
+                      if(userViewModel.userStatus == UserStatus.success){
+                        socialPoint = "${userViewModel.user.socialPoint.daily + userViewModel.user.socialPoint.permanent}";
                       }
                       return Container(
                         width: kScreenWidth(context),
@@ -117,8 +113,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                       child: Text("No", ),
                                     ),
                                     TextButton(
-                                      onPressed: (){
-                                        _authController.signOut();
+                                      onPressed: ()async{
+                                        await _authController.signOut();
                                         Navigator.pushNamedAndRemoveUntil(context, LoginPage.pageName, (route) => false);
                                       },
                                       child: Text("Yes",style:TextStyle(color: Colors.black26),),

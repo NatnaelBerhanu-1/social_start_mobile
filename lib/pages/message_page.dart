@@ -6,6 +6,7 @@ import 'package:open_file/open_file.dart';
 import 'package:social_start/controllers/auth_controller.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/services/chat_service.dart';
+import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
 import 'package:uuid/uuid.dart';
 import 'package:social_start/models/chat.dart' as lChat;
@@ -24,7 +25,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   List<types.Message> _messages = [];
   var _user;
-  UserController _userController = UserController();
+  UserController _userController = getIt<UserController>();
 
   @override
   void initState() {

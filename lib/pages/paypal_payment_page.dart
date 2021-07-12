@@ -4,6 +4,7 @@ import 'package:social_start/models/checkout.dart';
 import 'package:social_start/models/user.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/user.dart';
+import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../services/paypal_service.dart';
@@ -21,7 +22,7 @@ class PaypalPayment extends StatefulWidget {
 }
 
 class PaypalPaymentState extends State<PaypalPayment> {
-  UserController _userController = UserController();
+  UserController _userController = getIt<UserController>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String checkoutUrl;
   String executeUrl;

@@ -90,6 +90,25 @@ class User {
     );
   }
 
+  Map<String, dynamic> toJsonForPost() {
+    return {
+      'first_name': this.firstName,
+      'last_name': this.lastName,
+      'email': this.email,
+      'bio': this.bio,
+      'payment_method': this.paymentMethod,
+      'banner_url': this.bannerUrl,
+      'profile_url': this.profileUrl,
+      'relationship_status': this.relationShipStatus,
+      'total_followers':this.totalFollowers,
+      'total_following':this.totalFollowing,
+      'followers': this.followers,
+      'following': this.following,
+      'liked_posts': this.likedPosts,
+      'blocked': this.blocked
+    };
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'first_name': this.firstName,

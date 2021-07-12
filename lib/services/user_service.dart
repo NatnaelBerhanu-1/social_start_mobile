@@ -12,11 +12,12 @@ class UserService extends BaseService {
   }
 
   Future<User> getUser(String uid) async {
+    print("GETUSER $uid");
     DocumentSnapshot<Map<String, dynamic>> snapshot =
         await fireStore.collection("users").doc(uid).get();
     var user = User.fromJson(snapshot.data());
     user.uid = snapshot.id;
-    print("social point: ${user.socialPoint.permanent}");
+    // print("social point: ${user.socialPoint.permanent}");
     return user;
   }
 
@@ -103,6 +104,7 @@ class UserService extends BaseService {
   }
 
   Future<void> unFollowUser(followerId, userId) async {
+    print("UserId: $userId followerId: $followerId");
     await fireStore.runTransaction((transaction) async {
       try {
         DocumentReference followerRef =
@@ -122,6 +124,10 @@ class UserService extends BaseService {
         followerFollowing.remove(userId);
         userFollowers.remove(followerId);
 
+        DocumentSnapshot<Map<String, dynamic>> userDoc =
+        await transaction.get(userRef);
+        User user = User.fromJson(userDoc.data());
+
         transaction.update(followerRef, {
           "total_following": followerSnapshot.get("total_following") - 1,
           "following": followerFollowing
@@ -134,15 +140,14 @@ class UserService extends BaseService {
           },
         );
 
-        DocumentSnapshot<Map<String, dynamic>> userDoc =
-        await transaction.get(userRef);
-        User user = User.fromJson(userDoc.data());
+
 
         userPosts.docs.forEach((element) {
           transaction.update(element.reference, {"user": user.toJson()});
           print("updated post");
         });
       } catch (error, stk) {
+        print(error);
         print(stk);
         throw Exception("UnFollow failed");
       }

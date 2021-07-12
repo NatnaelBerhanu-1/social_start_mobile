@@ -169,7 +169,7 @@ class _SearchPageState extends State<SearchPage> {
                                     width: kScreenWidth(context),
                                     fit: BoxFit.cover,
                                     imageUrl:
-                                        'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+                                        '${_users[index].profileUrl}',
                                     placeholder: (context, url) => Center(
                                         child: CircularProgressIndicator(
                                       strokeWidth: 1.0,
@@ -185,17 +185,20 @@ class _SearchPageState extends State<SearchPage> {
                         );
                       })
                   : _searchEditingController.value.text != ''
-                      ? Center(
-                          child: Text(
-                          'No user found!',
-                          style: TextStyle(color: Colors.grey),
-                        ))
-                      : Center(
-                          child: Text(
-                            'Search Users...',
-                            style: TextStyle(color: Colors.grey),
+                      ? Padding(
+                        padding: const EdgeInsets.only(top:20.0),
+                        child: Text(
+                        'No user found!',
+                        style: TextStyle(color: Colors.grey),
                           ),
+                      )
+                      : Padding(
+                        padding: const EdgeInsets.only(top:20.0),
+                        child: Text(
+                          'Search Users...',
+                          style: TextStyle(color: Colors.grey),
                         ),
+                      ),
             ),
           ),
         ],

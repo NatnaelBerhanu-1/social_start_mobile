@@ -2,12 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/user.dart' as usr;
 import 'package:social_start/services/firebase_services.dart';
 import 'package:social_start/utils/constants.dart';
+import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
 import 'package:path/path.dart' as path;
+import 'package:social_start/viewmodels/user_viewmodel.dart';
 import 'package:social_start/widgets/custom_appbar.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -44,7 +49,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   // usr.User user = usr.User();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  UserController userController = new UserController();
+  UserController userController = getIt<UserController>();
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -60,13 +65,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return Container(height: kScreenHeight(context), child: Center(child: SpinKitFadingCircle(color: kPrimaryColor, size: 30,)));
                 }
 
                 var userDoc = snapshot.data;
 
                 print(FirebaseAuth.instance.currentUser.uid);
-                print(userDoc);
+                print(userDoc.data());
 
                 user = usr.User(
                     firstName: userDoc.get("first_name"),
@@ -88,21 +93,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       actionPressed: () {
                         if (_formKey.currentState.validate()) {
                           print(user.toJson());
-                          Utility.showProgressAlertDialog(
-                              context, "Updating...");
-                          FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(Utility.getUserId())
-                              .update(user.toJson())
-                              .then((value) {
-                            Navigator.of(context).pop();
-                            Utility.showSnackBar(context, "Profile updated");
-                            userController.updateUserPosts(
-                                Utility.getUserId(), user);
-                          }).onError((error, stackTrace) {
-                            Navigator.of(context).pop();
-                            Utility.showSnackBar(context, "Failed try again");
-                          });
+                          // Utility.showProgressAlertDialog(
+                          //     context, "Updating...");
+                          EasyLoading.show(status: 'updating...',maskType: EasyLoadingMaskType.black);
+                          FirebaseFirestore.instance.runTransaction((transaction) async{
+                            DocumentReference userDoc = FirebaseFirestore.instance
+                                .collection("users")
+                                .doc(Utility.getUserId());
+                            transaction.update(userDoc, user.toJson());
+                            DocumentSnapshot<Map<String, dynamic>> userPosts =
+                            await FirebaseFirestore.instance.collection("userPosts").doc(Utility.getUserId()).get();
+                            final Map<String, dynamic> userUpdate = {
+                              "first_name": user.firstName,
+                              "last_name": user.lastName,
+                              "profile_url": user.profileUrl
+                            };
+                            print("userPosts: ${userPosts.data()}");
+                            if(userPosts.data() != null)
+                              userPosts.data().forEach((key, value) {
+                                DocumentReference documentReference =
+                                FirebaseFirestore.instance.collection("posts").doc("$key");
+                                transaction.update(documentReference, {"user": userUpdate});
+                                print("updated post");
+                              });
+                            EasyLoading.dismiss();
+                            Utility.showSnackBar(context, "Account details updated");
+                            }).onError((error, stackTrace) {
+                              // Navigator.of(context).pop();
+                              print(error);
+                              print(stackTrace);
+                              EasyLoading.dismiss();
+                              Utility.showSnackBar(context, "Failed try again");
+                            });
                         }
                       },
                     ),
@@ -157,6 +179,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         Navigator.of(context).pop();
                                         Utility.showSnackBar(
                                             context, "Banner picture updated");
+                                        Provider.of<UserViewModel>(context).user.bannerUrl = newImageUrl;
                                       }).onError((error, stackTrace) {
                                         Navigator.of(context).pop();
                                         Utility.showSnackBar(context,
@@ -232,6 +255,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                         Navigator.pop(context);
                                         Utility.showSnackBar(
                                             context, "Profile image updated");
+                                        Provider.of<UserViewModel>(context).user.profileUrl = newImageUrl;
                                       }).onError((error, stackTrace) {
                                         print(error);
                                         print(stackTrace);

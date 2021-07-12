@@ -45,7 +45,7 @@ class Post{
       'category_id': this.categoryId,
       'user_id': this.userId,
       'type': this.type,
-      'user':this.user.toJson(),
+      'user':this.user.toJsonForPost(),
       'likes': likes,
       'comments': comments,
       'lat':lat,

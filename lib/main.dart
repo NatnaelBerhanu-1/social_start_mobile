@@ -10,8 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:social_start/models/chat.dart';
 import 'package:social_start/models/post.dart';
 import 'package:social_start/models/user.dart';
-import 'package:social_start/pages/EditProfilePage.dart';
+import 'package:social_start/pages/edit_profile_page.dart';
 import 'package:social_start/pages/change_password_page.dart';
+import 'package:social_start/pages/forgot_password.dart';
 import 'package:social_start/pages/login_page.dart';
 import 'package:social_start/pages/main_page.dart';
 import 'package:social_start/pages/message_page.dart';
@@ -24,28 +25,54 @@ import 'package:social_start/pages/settings_page.dart';
 import 'package:social_start/pages/signup_page.dart';
 import 'package:social_start/pages/splash_page.dart';
 import 'package:social_start/utils/constants.dart';
+import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/viewmodels/post_viewmodel.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
+import 'package:social_start/viewmodels/user_viewmodel.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 
 
 void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+
   if (defaultTargetPlatform == TargetPlatform.android) {
     InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
   }
-  WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
   await Hive.openLazyBox(kAppCacheDBName);
   await Firebase.initializeApp();
   Hive.registerAdapter(UserAdapter());
 
+  setupLocator();
+
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => PostViewModel())
+      ChangeNotifierProvider(create: (context) => PostViewModel()),
+      ChangeNotifierProvider(create: (context) => UserViewModel())
     ],
     child: MyApp(),
   ));
+  configLoading();
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..dismissOnTap = false;
 }
 
 class MyApp extends StatefulWidget {
@@ -58,8 +85,7 @@ class _MyAppState extends State<MyApp> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'SocialStart',
@@ -92,6 +118,10 @@ class _MyAppState extends State<MyApp> {
           return MaterialPageRoute(builder: (context) => ChangePasswordPage());
         }else if (settings.name == PurchaseProductsPage.pageName){
           return MaterialPageRoute(builder: (context) => PurchaseProductsPage());
+        }else if (settings.name == ForgotPassword.pageName){
+          return MaterialPageRoute(builder: (context) => ForgotPassword());
+        }else if (settings.name == SplashScreenPage.pageName){
+          return MaterialPageRoute(builder: (context) => SplashScreenPage(true));
         }
         return null;
       },
@@ -131,6 +161,7 @@ class _MyAppState extends State<MyApp> {
             }
             return SplashScreenPage(false);
           }),
+      builder: EasyLoading.init(),
     );
   }
 }

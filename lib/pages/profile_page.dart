@@ -2,17 +2,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
 import 'package:social_start/controllers/auth_controller.dart';
 import 'package:social_start/controllers/post_controller.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/chat.dart';
 import 'package:social_start/models/post.dart';
 import 'package:social_start/models/user.dart';
-import 'package:social_start/pages/EditProfilePage.dart';
+import 'package:social_start/pages/edit_profile_page.dart';
 import 'package:social_start/pages/message_page.dart';
 import 'package:social_start/pages/settings_page.dart';
 import 'package:social_start/utils/constants.dart';
+import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
+import 'package:social_start/viewmodels/user_viewmodel.dart';
 import 'package:social_start/widgets/custom_appbar.dart';
 import 'package:social_start/widgets/post_item.dart';
 
@@ -28,7 +32,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  UserController _userController = UserController();
+  UserController _userController = getIt<UserController>();
   PostController _postController = PostController();
   Future<User> user;
 
@@ -192,17 +196,13 @@ class _ProfilePageState extends State<ProfilePage> {
                               height: 8.0,
                             ),
                             snapshot.data.uid != Utility.getUserId()
-                                ? FutureBuilder(
-                                    future: _userController.getUser(),
+                                ? Consumer<UserViewModel>(
                                     builder: (context,
-                                        AsyncSnapshot<User> userSnapshot) {
-                                      if (userSnapshot.hasData) {
-                                        print(Utility.getUserId());
-                                        print(userSnapshot.data.following);
-                                        bool following = userSnapshot.data.following
+                                        userViewModel, child) {
+                                      if (userViewModel.userStatus == UserStatus.success) {
+                                        bool following = userViewModel.user.following
                                                 .indexOf(widget.userId) !=
                                             -1;
-                                        print("Following $following");
                                         return Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
@@ -217,7 +217,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   id: chatId,
                                                   user1Id: Utility.getUserId(),
                                                   user2Id: widget.userId,
-                                                  user1name: userSnapshot.data.firstName,
+                                                  user1name: userViewModel.user.firstName,
                                                   user2name: snapshot.data.firstName,
                                                 );
                                                 Navigator.pushNamed(context, ChatPage.pageName, arguments: chat);
@@ -230,21 +230,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ): SizedBox(),
                                             GestureDetector(
                                               onTap: () {
+                                                print(userViewModel.user.following);
                                                 if (following) {
                                                   _userController.unFollowUser(
-                                                      userSnapshot.data.uid,
+                                                      userViewModel.user.uid,
                                                       widget.userId).then((value){
                                                         setState(() {
                                                           following = false;
+                                                          userViewModel.user.following.remove(widget.userId);
                                                         });
                                                   });
                                                 } else {
                                                   // Utility.showSnackBar(_scaffoldKey.currentContext, "Following");
+                                                  print(userViewModel.user.toJson());
                                                   _userController.followUser(
-                                                      userSnapshot.data.uid,
+                                                      userViewModel.user.uid,
                                                       widget.userId).then((value){
                                                     setState(() {
                                                       following = true;
+                                                      userViewModel.user.following.add(widget.userId);
                                                     });
                                                   });
                                                 }
@@ -367,7 +371,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     }
 
                                     return Center(
-                                        child: CircularProgressIndicator());
+                                        child: SpinKitFadingCircle(color:kPrimaryColor, size: 30,));
                                   });
                             }
 
@@ -377,7 +381,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
               }
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                  child: SpinKitFadingCircle(color:kPrimaryColor, size: 30,)
+              );
             }),
       ),
     );
