@@ -39,19 +39,22 @@ class _SignUpPageState extends State<SignUpPage> {
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          Container(
-            padding: EdgeInsets.only(top: 50),
-            color: kPrimaryColor,
-            height: kScreenHeight(context),
-            width: kScreenWidth(context),
+          Align(
             alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsets.zero,
-              child: CircularLogoWidget()
+            child: Container(
+              padding: EdgeInsets.only(top: 50),
+              color: kPrimaryColor,
+              height: kScreenHeight(context),
+              width: kScreenWidth(context),
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsets.only(top: 20.0),
+                child: CircularLogoWidget()
+              ),
             ),
           ),
           Positioned(
-            top: 120,
+            top: 140,
             child: Container(
               height: kScreenHeight(context)-120,
               decoration: BoxDecoration(
@@ -269,7 +272,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text("Already have an account ? "),
+                              Text("Already have an account ? ", style: TextStyle(color: Colors.black87),),
                               GestureDetector(
                                 onTap: () {
                                   Navigator.pushNamed(

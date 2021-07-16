@@ -33,10 +33,10 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(child:pages[_selectedIndex]),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
+        color: Theme.of(context).scaffoldBackgroundColor,
         shape: CircularNotchedRectangle(),
         child: Container(
           height: 60.0,
@@ -77,7 +77,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   _bottomNavItem({int index, IconData icon, String label}) {
-    Color color = _selectedIndex == index ? kPrimaryColor : Colors.black12;
+    Color color = _selectedIndex == index ? Theme.of(context).primaryColor : Theme.of(context).accentIconTheme.color;
     return Expanded(
       child: GestureDetector(
         onTap: () {

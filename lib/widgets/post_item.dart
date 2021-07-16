@@ -60,7 +60,7 @@ class _PostItemState extends State<PostItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.all(widget.padding),
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
@@ -108,26 +108,23 @@ class _PostItemState extends State<PostItem> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           GestureDetector(
-            onTap: (){
-                print(widget.post.userId);
-                Navigator.pushNamed(context, ProfilePage.pageName, arguments: widget.post.userId);
-              },
+            onTap: () {
+              print(widget.post.userId);
+              Navigator.pushNamed(context, ProfilePage.pageName,
+                  arguments: widget.post.userId);
+            },
             child: Container(
               padding: EdgeInsets.all(2.0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40.0),
-                border: Border.all(
-                  color: kAccentColor,
-                  width: 2.0
-                )
-              ),
+                  borderRadius: BorderRadius.circular(40.0),
+                  border: Border.all(color: kAccentColor, width: 2.0)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(40.0),
                 child: CachedNetworkImage(
-                      imageUrl: widget.post.user.profileUrl,
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.cover),
+                    imageUrl: widget.post.user.profileUrl,
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.cover),
               ),
             ),
           ),
@@ -143,11 +140,12 @@ class _PostItemState extends State<PostItem> {
                 style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: kPrimaryColor),
+                    color: Theme.of(context).primaryColor),
               ),
               Text(
                 '${widget.user.totalFollowers} followers',
-                style: TextStyle(fontSize: 12.0, color: kPrimaryLightColor),
+                style: TextStyle(
+                    fontSize: 12.0, color: Theme.of(context).primaryColorLight),
               )
             ],
           ),
@@ -180,7 +178,9 @@ class _PostItemState extends State<PostItem> {
                       child: Container(
                           child: Text(
                         'following',
-                        style: TextStyle(color: Colors.black45, fontSize: 14.0),
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 14.0),
                       ))))
         ],
       ),
@@ -210,72 +210,89 @@ class _PostItemState extends State<PostItem> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                      onPressed: (){
+                      onPressed: () {
                         showModalBottomSheet(
-                          enableDrag: true,
-                          builder: (BuildContext context){
-                            return Wrap(
-                              children: [Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    ListTile(
-                                      onTap: ()async{
-                                        try {
-                                          await _postController.awardPoint(
-                                              widget.post.id);
-                                          Utility.showSnackBar(context, "Points awarded +1");
-                                          Navigator.pop(context);
-                                        }catch(error){
-                                          print("HERE");
-                                          Utility.showSnackBar(context, error);
-                                          Navigator.pop(context);
-                                        }
-                                      },
-                                      title: Text("Award social point"),
-                                      leading: Icon(
-                                        Icons.bookmark_add
+                            backgroundColor: Theme.of(context).backgroundColor,
+                            enableDrag: true,
+                            builder: (BuildContext context) {
+                              return Wrap(children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        onTap: () async {
+                                          try {
+                                            await _postController
+                                                .awardPoint(widget.post.id);
+                                            Utility.showSnackBar(
+                                                context, "Points awarded +1");
+                                            Navigator.pop(context);
+                                          } catch (error) {
+                                            print("HERE");
+                                            Utility.showSnackBar(
+                                                context, error);
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                        title: Text("Award social point",  style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color)),
+                                        leading: Icon(
+                                          Icons.bookmark_add,
+                                          color: Theme.of(context).accentIconTheme.color,
+                                        ),
+                                        horizontalTitleGap: 1.0,
                                       ),
-                                      horizontalTitleGap: 1.0,
-                                    ),
-                                    Divider(),
-                                    ListTile(
-                                      leading: Icon(
-                            Icons.message,
-                            ),
-                                      title: Text("Message"),
-                                      horizontalTitleGap: 1.0,
-                                      onTap: () async{
-                                        print("${Utility.getUserId()} ${widget.post.userId}");
-                                        if(Utility.getUserId() == widget.post.userId){
-                                          return;
-                                        }
-                                        var chatId = await _userController.getChatId(Utility.getUserId(), widget.post.userId);
-                                        if(chatId == null){
-                                          chatId = "";
-                                        }
-                                        Chat chat = Chat(
-                                          id: chatId,
-                                          user1Id: Utility.getUserId(),
-                                          user2Id: widget.post.user.uid,
-                                          user1name: widget.user.firstName,
-                                          user2name: widget.post.user.firstName,
-                                        );
-                                        Navigator.pop(context);
-                                        Navigator.pushNamed(context, ChatPage.pageName, arguments: chat);
-                                      },
-                                    ),
-                                  ],
+                                      Divider(),
+                                      ListTile(
+                                        leading: Icon(
+                                          Icons.message,
+                                          color: Theme.of(context).accentIconTheme.color,
+
+                                        ),
+                                        title: Text("Message", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),
+                                        horizontalTitleGap: 1.0,
+                                        onTap: () async {
+                                          print(
+                                              "${Utility.getUserId()} ${widget.post.userId}");
+                                          if (Utility.getUserId() ==
+                                              widget.post.userId) {
+                                            return;
+                                          }
+                                          var chatId =
+                                              await _userController.getChatId(
+                                                  Utility.getUserId(),
+                                                  widget.post.userId);
+                                          if (chatId == null) {
+                                            chatId = "";
+                                          }
+                                          Chat chat = Chat(
+                                            id: chatId,
+                                            user1Id: Utility.getUserId(),
+                                            user2Id: widget.post.userId,
+                                            user2ProfilePic:
+                                                widget.post.user.profileUrl,
+                                            user1ProfilePic:
+                                                widget.user.profileUrl,
+                                            user1name: widget.user.firstName,
+                                            user2name:
+                                                widget.post.user.firstName,
+                                          );
+                                          Navigator.pop(context);
+                                          Navigator.pushNamed(
+                                              context, ChatPage.pageName,
+                                              arguments: chat);
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ]
-                            );
-                          }, context: context
-                        );
+                              ]);
+                            },
+                            context: context);
                       },
                       icon: Icon(
                         Icons.bookmark,
-                        color: kPrimaryColor,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                     Text(
@@ -283,20 +300,22 @@ class _PostItemState extends State<PostItem> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
-                          color: kPrimaryColor),
+                          color: Theme.of(context).primaryColor),
                     ),
                   ],
                 ),
               ))
             ],
           ),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Text(
             '${widget.post.views} views',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
-                color: kPrimaryColor),
+                color: Theme.of(context).primaryColor),
           ),
         ],
       ),
@@ -334,7 +353,7 @@ class _PostItemState extends State<PostItem> {
     var user = widget.user;
     var post = widget.post;
     return GestureDetector(
-      onTap: () async{
+      onTap: () async {
         if (user.likedPosts.indexOf(widget.post.id) == -1) {
           setState(() {
             user.likedPosts.add(widget.post.id);
@@ -359,7 +378,7 @@ class _PostItemState extends State<PostItem> {
                 : Icons.favorite,
             size: 25,
             color: widget.user.likedPosts.indexOf(widget.post.id) == -1
-                ? kPrimaryColor
+                ? Theme.of(context).primaryColor
                 : kAccentColor,
           ),
           SizedBox(
@@ -370,7 +389,7 @@ class _PostItemState extends State<PostItem> {
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,
-                color: kPrimaryColor),
+                color: Theme.of(context).primaryColor),
           ),
         ],
       ),

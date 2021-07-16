@@ -24,6 +24,7 @@ class _SearchPageState extends State<SearchPage> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Card(
+            color: Theme.of(context).backgroundColor,
             margin: EdgeInsets.zero,
             elevation: 1,
             shape: RoundedRectangleBorder(
@@ -44,10 +45,13 @@ class _SearchPageState extends State<SearchPage> {
                     height: 40,
                     margin: EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
-                      color: kBackgroundColor,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                     ),
                     child: TextField(
                       controller: _searchEditingController,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyText2.color
+                      ),
                       onChanged: (value) async {
                         setState(() {
                           _searchText = value;
@@ -86,10 +90,13 @@ class _SearchPageState extends State<SearchPage> {
                           ):null,
                           prefixIcon: Icon(
                             Icons.search,
-                            color: Colors.grey,
+                            color: Theme.of(context).primaryColorLight,
                             size: 20,
                           ),
                           hintText: 'Search...',
+                          hintStyle: TextStyle(
+                            color: Theme.of(context).primaryColorLight
+                          ),
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           errorBorder: InputBorder.none),
@@ -125,6 +132,7 @@ class _SearchPageState extends State<SearchPage> {
                                   fontSize: 16,
                                   letterSpacing: 1.01,
                                   fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).textTheme.bodyText2.color
                                 ),
                               ),
                               subtitle: Column(
@@ -196,7 +204,7 @@ class _SearchPageState extends State<SearchPage> {
                         padding: const EdgeInsets.only(top:20.0),
                         child: Text(
                           'Search Users...',
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
                         ),
                       ),
             ),

@@ -34,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kPrimaryColor,
       body: Stack(
         children: [
           Container(
@@ -186,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Don't have an account ? "),
+                          Text("Don't have an account ? ", style: TextStyle(color: Colors.black87),),
                           GestureDetector(
                             onTap: () {
                               Navigator.pushNamed(

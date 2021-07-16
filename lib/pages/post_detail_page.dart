@@ -43,15 +43,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
     print(widget.post);
     print(widget.user);
     return Scaffold(
-      backgroundColor: kBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: kPrimaryColor
+          color: Theme.of(context).primaryColor
         ),
-        title: Text("${widget.post.user.firstName} ${widget.post.user.lastName}", style: TextStyle(color: kPrimaryColor),),
+        title: Text("${widget.post.user.firstName} ${widget.post.user.lastName}", style: TextStyle(color: Theme.of(context).primaryColor),),
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).backgroundColor,
       ),
       body: Stack(
         children: [

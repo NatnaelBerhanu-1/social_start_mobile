@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.circular(20.0),
                   child:  Icon(
                     Icons.settings_outlined,
-                    color: kPrimaryColor,
+                    color: Theme.of(context).primaryColor,
                     size: 30,
                   ),
                 ),
@@ -87,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Something went wrong"),
+                    Text("Something went wrong",style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),
                     TextButton(onPressed: (){}, child: Text('try again',style: TextStyle(color: kAccentColor),))
                   ],
                 );
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               postViewModel.postState == PostState.Fetched ? postViewModel.posts.isEmpty ?
-                              Center(child: Text("No posts available", style: TextStyle(color: Colors.black38)),) :
+                              Center(child: Text("No posts available", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color)),) :
                               ListView.builder(
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
@@ -144,10 +144,10 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text("Something went wrong"),
+                                  Text("Something went wrong",style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),
                                   TextButton(onPressed: (){}, child: Text('try again',style: TextStyle(color: kAccentColor),))
                                 ],
-                              ):Center(child: SpinKitFadingCircle(size: 30, color: kPrimaryColor,),),
+                              ):Center(child: SpinKitFadingCircle(size: 30, color: Theme.of(context).primaryColor,),),
                             ],
                           ),
                         );
@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             title,
             style: TextStyle(
                 fontWeight: active ? FontWeight.bold : FontWeight.w400,
-                color: kPrimaryColor
+                color: Theme.of(context).primaryColor
             ),
           ),
           active ?Container(
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
             height: 8,
             width: 8,
             decoration: BoxDecoration(
-              color: kPrimaryColor,
+              color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(4)
             ),
           ): SizedBox(

@@ -8,6 +8,7 @@ import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/services/chat_service.dart';
 import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
+import 'package:social_start/widgets/custom_appbar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:social_start/models/chat.dart' as lChat;
 
@@ -159,7 +160,8 @@ class _ChatPageState extends State<ChatPage> {
     );
     //TODO get the chatId from somewhere
     //TODO get the receiver id from the clicked event
-    String receiverId = widget.receiverId;
+    // print(widget.chat.toJson());
+    String receiverId = widget.chat.user2Id;
     if(chatId == ""){
       var chId = await _userController.createChat(widget.chat);
       setState(() {
@@ -175,45 +177,56 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     print("chatId: ${widget.chatId}");
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-          stream: FirebaseFirestore.instance
-              .collection("messages")
-              .where("chat_id", isEqualTo: chatId)
-              .orderBy('timestamp', descending: false)
-              .snapshots(),
-          builder: (context, snapshot) {
-            List<types.Message> sentMessages = [];
-            if (snapshot.hasData) {
-              snapshot.data.docs.forEach((doc) {
-                print('Current sender_id => ${doc['sender_id']}');
+      body: SafeArea(
+        child: Column(
+          children: [
+            CustomAppBar(
+              title: widget._currentUser != widget.chat.user1Id ? widget.chat.user1name : widget.chat.user2name,
+            ),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection("messages")
+                      .where("chat_id", isEqualTo: chatId)
+                      .orderBy('timestamp', descending: false)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    List<types.Message> sentMessages = [];
+                    if (snapshot.hasData) {
+                      snapshot.data.docs.forEach((doc) {
+                        print('Current sender_id => ${doc['sender_id']}');
 
-                Timestamp timestamp = doc['timestamp'] as Timestamp;
-                var dateTime = timestamp.toDate().millisecondsSinceEpoch / 1000;
+                        Timestamp timestamp = doc['timestamp'] as Timestamp;
+                        var dateTime = timestamp.toDate().millisecondsSinceEpoch / 1000;
 
-                var message = {
-                  'authorId': doc['sender_id'],
-                  'text': doc['content'],
-                  'timestamp': dateTime.floor(),
-                  'type': 'text',
-                  'status':
-                      'Status.delivered', //TODO change the messages type based on the message status
-                };
-                sentMessages.insert(0, types.Message.fromJson(message));
-              });
-            }
+                        var message = {
+                          'authorId': doc['sender_id'],
+                          'text': doc['content'],
+                          'timestamp': dateTime.floor(),
+                          'type': 'text',
+                          'status':
+                              'Status.delivered', //TODO change the messages type based on the message status
+                        };
+                        sentMessages.insert(0, types.Message.fromJson(message));
+                      });
+                    }
 
-            return snapshot.hasData
-                ? Chat(
-                    messages: sentMessages,
-                    onMessageTap: _handleMessageTap,
-                    onPreviewDataFetched: _handlePreviewDataFetched,
-                    onSendPressed: _handleSendPressed,
-                    user: _user,
-                  )
-                : Center(
-                    child: CircularProgressIndicator(),
-                  );
-          }),
+                    return snapshot.hasData
+                        ? Chat(
+                            messages: sentMessages,
+                            onMessageTap: _handleMessageTap,
+                            onPreviewDataFetched: _handlePreviewDataFetched,
+                            onSendPressed: _handleSendPressed,
+                            user: _user,
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          );
+                  }),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

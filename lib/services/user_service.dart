@@ -207,12 +207,7 @@ class UserService extends BaseService {
   }
 
   Future<dynamic> createChat(Chat chat) async {
-    var ch = await fireStore.collection("chats").add({
-      "user1_id":chat.user1Id,
-      "user2_id":chat.user2Id,
-      "user1_name": chat.user1name,
-      "user2_name": chat.user2name
-    });
+    var ch = await fireStore.collection("chats").add(chat.toJson());
     return ch.id;
   }
 

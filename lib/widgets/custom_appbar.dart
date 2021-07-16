@@ -15,7 +15,7 @@ class CustomAppBar extends StatelessWidget {
       height: 50,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).backgroundColor,
         border: Border(
           bottom: BorderSide(
             color: Colors.black12,
@@ -33,7 +33,6 @@ class CustomAppBar extends StatelessWidget {
             icon:
             Icon(
               Icons.arrow_back,
-              color: Colors.black87,
               size: 20,
             ),
           ): SizedBox(width: 20,),
@@ -42,7 +41,7 @@ class CustomAppBar extends StatelessWidget {
           ),
           actionIcon == null ? SizedBox(
             width: 40,
-          ): IconButton(icon: Icon(actionIcon, color: Colors.black87,), onPressed: actionPressed),
+          ): IconButton(icon: Icon(actionIcon,), onPressed: actionPressed),
         ],
       ),
     );

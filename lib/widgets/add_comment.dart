@@ -28,7 +28,7 @@ class _AddCommentState extends State<AddComment> {
     // TODO: implement build
     return Container(
       height: 70,
-      color: Colors.white,
+      color: Theme.of(context).backgroundColor,
       padding: EdgeInsets.all(8.0),
       child: Row(
         children: [
@@ -42,10 +42,14 @@ class _AddCommentState extends State<AddComment> {
                 },
                 decoration: InputDecoration(
                   border: _inputBorder(),
-                  fillColor: Colors.black26,
+                  fillColor: Theme.of(context).scaffoldBackgroundColor,
+                  filled: true,
                   enabledBorder: _inputBorder(),
                   focusedBorder: _inputBorder(kPrimaryColor),
                   hintText: "Add comment...",
+                  hintStyle: TextStyle(
+                    color: Theme.of(context).textTheme.bodyText2.color
+                  ),
                   contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
                 ),
               )
@@ -102,7 +106,7 @@ class _AddCommentState extends State<AddComment> {
       borderRadius: BorderRadius.circular(40),
       borderSide: BorderSide(
         color: color,
-        width: 2.0
+        width: 1.0
       ),
     );
   }

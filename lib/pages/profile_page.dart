@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       key: _scaffoldKey,
       body: SafeArea(
         child: FutureBuilder(
@@ -69,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         } : null,
                       ),
                       Container(
-                        color: Colors.white,
+                        color: Theme.of(context).backgroundColor  ,
                         width: kScreenWidth(context),
                         height: 180,
                         child: Stack(
@@ -123,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                       Container(
-                        color: Colors.white,
+                        color: Theme.of(context).backgroundColor,
                         width: kScreenWidth(context),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 4),
@@ -139,11 +139,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               height: 4,
                             ),
                             Text(
-                              "Single",
+                              snapshot.data.relationShipStatus!=null ? snapshot.data.relationShipStatus : '----',
                               style: TextStyle(
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black45),
+                                  color: Theme.of(context).textTheme.bodyText2.color),
                             ),
                             SizedBox(
                               height: 12,
@@ -165,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       style: TextStyle(
                                           fontSize: 12.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.black45),
+                                          color: Theme.of(context).textTheme.bodyText2.color),
                                     )
                                   ],
                                 ),
@@ -186,7 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       style: TextStyle(
                                           fontSize: 12.0,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.black45),
+                                          color: Theme.of(context).textTheme.bodyText2.color),
                                     )
                                   ],
                                 )
@@ -219,15 +219,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                                   user2Id: widget.userId,
                                                   user1name: userViewModel.user.firstName,
                                                   user2name: snapshot.data.firstName,
+                                                  user1ProfilePic: userViewModel.user.profileUrl,
+                                                  user2ProfilePic: snapshot.data.profileUrl
                                                 );
                                                 Navigator.pushNamed(context, ChatPage.pageName, arguments: chat);
                                               },
                                               child: Container(
                                                 child: Text(
-                                                  "message"
+                                                  "message",
+                                                  style: TextStyle(color: kAccentColor),
                                                 ),
                                               ),
                                             ): SizedBox(),
+                                            SizedBox(width: 10,),
                                             GestureDetector(
                                               onTap: () {
                                                 print(userViewModel.user.following);
@@ -259,7 +263,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     horizontal: 10.0,
                                                     vertical: 4.0),
                                                 decoration: BoxDecoration(
-                                                  color: following ? Colors.white : kAccentColor,
+                                                  color: following ? Theme.of(context).backgroundColor : kAccentColor,
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(4.0)),
@@ -288,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                           : "Follow",
                                                       style: TextStyle(
                                                           color: following
-                                                              ? Colors.black26
+                                                              ? Theme.of(context).textTheme.bodyText2.color
                                                               : Colors.white),
                                                     ),
                                                   ],

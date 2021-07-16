@@ -54,7 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: StreamBuilder(
@@ -65,7 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(height: kScreenHeight(context), child: Center(child: SpinKitFadingCircle(color: kPrimaryColor, size: 30,)));
+                  return Container(height: kScreenHeight(context), child: Center(child: SpinKitFadingCircle(color: Theme.of(context).primaryColor, size: 30,)));
                 }
 
                 var userDoc = snapshot.data;
@@ -129,7 +129,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       },
                     ),
                     Container(
-                      color: Colors.white,
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       width: kScreenWidth(context),
                       height: 210,
                       child: Stack(
@@ -286,6 +286,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             TextFormField(
                                 decoration: InputDecoration(
                                     labelText: "First name",
+                                    labelStyle: TextStyle(
+                                        color: Theme.of(context).textTheme.bodyText2.color
+                                    ),
+                                    hintStyle:  TextStyle(
+                                        color: Theme.of(context).textTheme.bodyText2.color
+                                    ),
                                     enabledBorder: _enabledBorder(),
                                     focusedBorder: _focusedBorder(),
                                     errorBorder: _errorBorder(),
@@ -295,6 +301,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   user.firstName = value;
                                   print(user.toJson());
                                 },
+                                style: TextStyle(
+                                  color: Theme.of(context).textTheme.bodyText2.color
+                                ),
                                 initialValue: user.firstName,
                                 validator: _requiredValidator()),
                             SizedBox(
@@ -303,11 +312,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             TextFormField(
                               decoration: InputDecoration(
                                   labelText: "Last name",
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
+                                  hintStyle:  TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
                                   enabledBorder: _enabledBorder(),
                                   focusedBorder: _focusedBorder(),
                                   errorBorder: _errorBorder(),
                                   focusedErrorBorder: _focusedBorder()),
                               maxLines: 1,
+                              style: TextStyle(
+                                  color: Theme.of(context).textTheme.bodyText2.color
+                              ),
                               onChanged: (value) {
                                 user.lastName = value;
                               },
@@ -320,10 +338,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             TextFormField(
                               decoration: InputDecoration(
                                   labelText: "Bio",
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
+                                  hintStyle:  TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
                                   enabledBorder: _enabledBorder(),
                                   focusedBorder: _focusedBorder(),
                                   errorBorder: _errorBorder(),
                                   focusedErrorBorder: _focusedBorder()),
+                              style: TextStyle(
+                                  color: Theme.of(context).textTheme.bodyText2.color
+                              ),
                               maxLength: 150,
                               onChanged: (value) {
                                 user.bio = value;
@@ -333,6 +360,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             SizedBox(height: 10.0),
                             DropdownButtonFormField<String>(
+                              dropdownColor: Theme.of(context).backgroundColor,
                               items: _relationShipStatus
                                   .map((e) => DropdownMenuItem(
                                         child: Text(e),
@@ -341,11 +369,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   .toList(),
                               decoration: InputDecoration(
                                   labelText: "Relationship status",
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
+                                  hintStyle:  TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
                                   enabledBorder: _enabledBorder(),
                                   focusedBorder: _focusedBorder(),
                                   errorBorder: _errorBorder(),
                                   focusedErrorBorder: _focusedBorder()),
                               value: user.relationShipStatus,
+                              style: TextStyle(
+                                  color: Theme.of(context).textTheme.bodyText2.color
+                              ),
                               onChanged: (value) {
                                 user.relationShipStatus = value;
                               },
@@ -358,6 +395,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             SizedBox(height: 20),
                             DropdownButtonFormField<String>(
+                              dropdownColor: Theme.of(context).backgroundColor,
                               items: _paymentOptions
                                   .map((e) => DropdownMenuItem(
                                         child: Text(e),
@@ -366,11 +404,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                   .toList(),
                               decoration: InputDecoration(
                                   labelText: "Payment method",
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
+                                  hintStyle:  TextStyle(
+                                      color: Theme.of(context).textTheme.bodyText2.color
+                                  ),
                                   enabledBorder: _enabledBorder(),
                                   focusedBorder: _focusedBorder(),
                                   errorBorder: _errorBorder(),
                                   focusedErrorBorder: _focusedBorder()),
                               value: user.paymentMethod,
+                              style: TextStyle(
+                                  color: Theme.of(context).textTheme.bodyText2.color
+                              ),
                               onChanged: (value) {
                                 user.paymentMethod = value;
                               },

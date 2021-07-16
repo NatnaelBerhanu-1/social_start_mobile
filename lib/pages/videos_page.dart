@@ -82,7 +82,7 @@ class _VideosPageState extends State<VideosPage> {
                   return Container(
                       padding: EdgeInsets.only(top: 20),
                       child: SpinKitFadingCircle(
-                    color: kPrimaryColor,
+                    color: Theme.of(context).primaryColor,
                     size: 30,
                   ));
                 }),

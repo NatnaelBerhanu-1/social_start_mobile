@@ -49,7 +49,7 @@ class _NewPostPageState extends State<NewPostPage> {
     // TODO: implement build
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: kBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -94,12 +94,13 @@ class _NewPostPageState extends State<NewPostPage> {
                                 color: kAccentColor,
                                 borderRadius: BorderRadius.circular(6.0)
                             ):null,
-                            child: Text("Video", style:TextStyle(color: !isPhoto ? Colors.white : Colors.black38)),
+                            child: Text("Video", style:TextStyle(color: !isPhoto ? Colors.white : Theme.of(context).textTheme.bodyText2.color)),
                           ),
                         ),
                       ],
                     ),
                     isPhoto ? Card(
+                      color: Theme.of(context).backgroundColor,
                       child: Container(
                         padding: EdgeInsets.all(8.0),
                         height: 100,
@@ -129,6 +130,7 @@ class _NewPostPageState extends State<NewPostPage> {
                         ),
                       ),
                     ) : Card(
+                      color: Theme.of(context).backgroundColor,
                       child: Container(
                         padding: EdgeInsets.all(8.0),
                         height: 100,
@@ -167,7 +169,7 @@ class _NewPostPageState extends State<NewPostPage> {
                     //       child: Text("Post a video", style: Theme.of(context).textTheme.headline5.copyWith(color:kPrimaryColor, fontWeight: FontWeight.bold),)),
                     // ),
                     Card(
-                      color: Colors.white,
+                      color: Theme.of(context).backgroundColor,
                       child: Container(
                         width: kScreenWidth(context),
                         padding: EdgeInsets.all(8.0),
@@ -176,11 +178,20 @@ class _NewPostPageState extends State<NewPostPage> {
                           children: [
                             Text(
                               "Add caption",
-                              style: Theme.of(context).textTheme.headline5,
+                              style: Theme.of(context).textTheme.headline5.copyWith(color: Theme.of(context).textTheme.bodyText2.color),
                             ),
                             TextField(
                               maxLength: 150,
                               maxLines: null,
+                              style: TextStyle(
+                                color: Theme.of(context).textTheme.bodyText2.color,
+                              ),
+                              decoration: InputDecoration(
+                                helperStyle: TextStyle(
+                                  color: Theme.of(context).textTheme.bodyText2.color,
+
+                                )
+                              ),
                               onChanged: (value){
                                 setState(() {
                                   _newPost.caption = value;
@@ -195,7 +206,7 @@ class _NewPostPageState extends State<NewPostPage> {
                       ),
                     ),
                     Card(
-                      color: Colors.white,
+                      color: Theme.of(context).backgroundColor,
                       child: Container(
                         width: kScreenWidth(context),
                         padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
@@ -211,7 +222,7 @@ class _NewPostPageState extends State<NewPostPage> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline5
-                                      .copyWith(color: Colors.black87),
+                                      .copyWith(color: Theme.of(context).textTheme.bodyText2.color),
                                 ),
                                 GestureDetector(
                                     onTap: () async {
@@ -226,7 +237,7 @@ class _NewPostPageState extends State<NewPostPage> {
                                         style: Theme.of(context)
                                             .textTheme
                                             .headline5
-                                            .copyWith(color: kPrimaryLightColor)))
+                                            .copyWith(color: Theme.of(context).accentColor)))
                               ],
                             ),
                             _newPost.categoryId != null
@@ -236,7 +247,7 @@ class _NewPostPageState extends State<NewPostPage> {
                                   horizontal: 8.0, vertical: 8.0),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5.0),
-                                color: kPrimaryColor,
+                                color: Theme.of(context).accentColor,
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -275,11 +286,11 @@ class _NewPostPageState extends State<NewPostPage> {
                               aspectRatio: _controller.value.aspectRatio,
                               child: VideoPlayer(_controller)),
                           _controller.value.isPlaying ?
-                          IconButton(icon: Icon(Icons.pause_circle_filled, color: kPrimaryColor,size: 30,), onPressed: (){
+                          IconButton(icon: Icon(Icons.pause_circle_filled, color: Theme.of(context).primaryColor,size: 30,), onPressed: (){
                             setState(() {
                               _controller.pause();
                             });})
-                              :IconButton(icon: Icon(Icons.play_circle_fill, color: kPrimaryColor, size: 30,), onPressed: (){
+                              :IconButton(icon: Icon(Icons.play_circle_fill, color: Theme.of(context).primaryColor, size: 30,), onPressed: (){
                             setState(() {
                               _controller.play();
                             });
@@ -354,7 +365,7 @@ class _NewPostPageState extends State<NewPostPage> {
   Future<Widget> _buildCategoriesDialog(BuildContext context) async {
     Future<QuerySnapshot> categoriesRef = FirebaseFirestore.instance.collection("categories").get();
     return AlertDialog(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).backgroundColor,
       insetPadding: EdgeInsets.all(20),
       content: Container(
         width: kScreenWidth(context),
@@ -382,7 +393,7 @@ class _NewPostPageState extends State<NewPostPage> {
                       },
                       child: Container(
                         padding: EdgeInsets.all(8.0),
-                        child: Text(categories[index].name),
+                        child: Text(categories[index].name, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),
                       ),
                     );
                   },

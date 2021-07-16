@@ -10,5 +10,6 @@ var kScreenHeight = (context) => MediaQuery.of(context).size.height;
 var kBackgroundColor = Color(0xFFF2F2F2);
 var kBackgroundDark = Colors.black38;
 const kBorderColor = Color(0xFFBABABA);
-
+const kPrimaryColorDark = Color(0xFFFFFFFF);
+const kPrimaryLightColorDark = Color(0xFFF2F2F2);
 var kAppCacheDBName = "app_cache";
