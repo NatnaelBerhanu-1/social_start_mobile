@@ -226,6 +226,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     await userController.createUser(user:_newUser);
                                     print("uid: $uid");
                                     Navigator.of(context).pushNamedAndRemoveUntil(SplashScreenPage.pageName, (Route<dynamic> route) => false);
+                                    EasyLoading.dismiss();
                                   } on FirebaseAuthException catch (e) {
                                     if (e.code == 'weak-password') {
                                       print('The password provided is too weak.');

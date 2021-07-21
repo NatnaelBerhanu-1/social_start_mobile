@@ -24,8 +24,8 @@ class UserService extends BaseService {
   Future<QuerySnapshot> searchUser({String value}) async {
     return FirebaseFirestore.instance
         .collection('users')
-        .where('first_name', isGreaterThanOrEqualTo: value)
-        .where('first_name', isLessThan: value + 'z')
+        .where('first_name_lowercase', isGreaterThanOrEqualTo: value)
+        .where('first_name_lowercase', isLessThan: value + 'z')
         .get();
   }
 
@@ -63,8 +63,6 @@ class UserService extends BaseService {
             .collection("posts")
             .where("user_id", isEqualTo: userId)
             .get();
-
-
 
         DocumentSnapshot followerSnapshot = await transaction.get(followerRef);
         DocumentSnapshot userSnapshot = await transaction.get(userRef);
@@ -108,7 +106,7 @@ class UserService extends BaseService {
     await fireStore.runTransaction((transaction) async {
       try {
         DocumentReference followerRef =
-        fireStore.collection("users").doc(followerId);
+            fireStore.collection("users").doc(followerId);
         DocumentReference userRef = fireStore.collection("users").doc(userId);
         QuerySnapshot userPosts = await fireStore
             .collection("posts")
@@ -125,7 +123,7 @@ class UserService extends BaseService {
         userFollowers.remove(followerId);
 
         DocumentSnapshot<Map<String, dynamic>> userDoc =
-        await transaction.get(userRef);
+            await transaction.get(userRef);
         User user = User.fromJson(userDoc.data());
 
         transaction.update(followerRef, {
@@ -139,8 +137,6 @@ class UserService extends BaseService {
             "followers": userFollowers
           },
         );
-
-
 
         userPosts.docs.forEach((element) {
           transaction.update(element.reference, {"user": user.toJson()});
@@ -184,19 +180,25 @@ class UserService extends BaseService {
 
   Future<dynamic> getChatId(userOneId, userTwoId) async {
     var chatId;
-    QuerySnapshot chatSnapshot = await fireStore.collection("chats").where("user1_id", isEqualTo: userOneId).get();
+    QuerySnapshot chatSnapshot = await fireStore
+        .collection("chats")
+        .where("user1_id", isEqualTo: userOneId)
+        .get();
     print(chatSnapshot.docs);
     chatSnapshot.docs.forEach((DocumentSnapshot element) {
-      if(element.get("user2_id") == userTwoId){
+      if (element.get("user2_id") == userTwoId) {
         chatId = element.id;
         return;
       }
     });
-    if(chatId == null){
-      QuerySnapshot chatSnapshot2 = await fireStore.collection("chats").where("user1_id", isEqualTo: userTwoId).get();
+    if (chatId == null) {
+      QuerySnapshot chatSnapshot2 = await fireStore
+          .collection("chats")
+          .where("user1_id", isEqualTo: userTwoId)
+          .get();
       print(chatSnapshot2.docs);
       chatSnapshot2.docs.forEach((DocumentSnapshot element) {
-        if(element.get("user2_id") == userTwoId){
+        if (element.get("user2_id") == userTwoId) {
           chatId = element.id;
           return;
         }
@@ -212,7 +214,8 @@ class UserService extends BaseService {
   }
 
   Future<void> purchaseSocialPoint(purchasedPoint) async {
-    DocumentReference<Map<String, dynamic>> usrRef = fireStore.collection("users").doc(Utility.getUserId());
+    DocumentReference<Map<String, dynamic>> usrRef =
+        fireStore.collection("users").doc(Utility.getUserId());
     DocumentSnapshot<Map<String, dynamic>> usr = await usrRef.get();
     User user = User.fromJson(usr.data());
     user.socialPoint.permanent = user.socialPoint.permanent + purchasedPoint;

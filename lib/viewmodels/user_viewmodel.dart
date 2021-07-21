@@ -28,7 +28,6 @@ class UserViewModel extends ChangeNotifier {
     print(error);
       userStatus = UserStatus.failed;
       notifyListeners();
-
     }
   }
 }

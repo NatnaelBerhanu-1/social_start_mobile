@@ -125,7 +125,9 @@ class User {
       'following': this.following,
       'liked_posts': this.likedPosts,
       'social_point': this.socialPoint.toJson(),
-      'blocked': this.blocked
+      'blocked': this.blocked,
+      'first_name_lowercase': this.firstName.toLowerCase(),
+      'last_name_lowercase': this.lastName.toLowerCase()
     };
   }
 }
