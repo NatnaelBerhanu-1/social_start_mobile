@@ -75,24 +75,24 @@ class _SettingsPageState extends State<SettingsPage> {
                             textAlign: TextAlign.center,
                             style: TextStyle(fontWeight: FontWeight.normal),
                           ),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, PurchaseProductsPage.pageName);
-                              },
-                              child: Container(
-                                width: 200,
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 8.0),
-                                decoration: BoxDecoration(
-                                    color: kPrimaryColor,
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Text(
-                                  "Purchase",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ))
+                          // TextButton(
+                          //                           //     onPressed: () {
+                          //                           //       Navigator.pushNamed(
+                          //                           //           context, PurchaseProductsPage.pageName);
+                          //                           //     },
+                          //                           //     child: Container(
+                          //                           //       width: 200,
+                          //                           //       alignment: Alignment.center,
+                          //                           //       padding: EdgeInsets.symmetric(
+                          //                           //           vertical: 10.0, horizontal: 8.0),
+                          //                           //       decoration: BoxDecoration(
+                          //                           //           color: kPrimaryColor,
+                          //                           //           borderRadius: BorderRadius.circular(8)),
+                          //                           //       child: Text(
+                          //                           //         "Purchase",
+                          //                           //         style: TextStyle(color: Colors.white),
+                          //                           //       ),
+                          //                           //     ))
                         ],
                       ),
                     );
