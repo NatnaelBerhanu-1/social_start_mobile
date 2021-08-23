@@ -3,10 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/pages/login_page.dart';
 import 'package:social_start/pages/main_page.dart';
-import 'package:social_start/services/firebase_services.dart';
 import 'package:social_start/utils/constants.dart';
 import 'package:social_start/viewmodels/user_viewmodel.dart';
 
@@ -37,6 +35,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> with TickerProvider
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(Duration(seconds: 3), (){
           Provider.of<UserViewModel>(context, listen: false).getUser();
+          // Provider.of<UserViewModel>(context, listen: false).checkSubscription();
         });
       });
     }
@@ -63,7 +62,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> with TickerProvider
                     );
                   }
                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                    Navigator.of(context).pushNamedAndRemoveUntil(MainPage.pageName, (route) => false);
+                    Navigator.of(context).pushNamedAndRemoveUntil(MainPage.pageName, (route) => false, arguments: userViewModel.user.uid);
                   });
                 }
                 if(userViewModel.userStatus == UserStatus.failed){

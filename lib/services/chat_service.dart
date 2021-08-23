@@ -22,12 +22,12 @@ class ChatService extends BaseService {
       {types.TextMessage message, String chatId, String receiverId}) {
     FirebaseFirestore.instance.runTransaction((transaction) async {
       transaction.update(FirebaseFirestore.instance.collection("chats").doc(chatId),
-          {"last_message": message.text, "last_message_by": message.authorId});
+          {"last_message": message.text, "last_message_by": message.author.id});
       transaction.set(FirebaseFirestore.instance.collection("messages").doc(),
           {'chat_id': chatId,
             'content': message.text,
             'receiver_id': receiverId,
-            'sender_id': message.authorId,
+            'sender_id': message.author.id,
             'timestamp': DateTime.now(),});
       // FirebaseFirestore.instance.collection("messages").add({
       //   'chat_id': chatId,

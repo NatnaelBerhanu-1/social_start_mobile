@@ -17,7 +17,8 @@ class ChatPage extends StatefulWidget {
   final String receiverId;
   final lChat.Chat chat;
   final _currentUser = AuthController().getCurrentUser().uid;
-  ChatPage({@required this.chat, @required this.receiverId,@required this.chatId});
+  ChatPage(
+      {@required this.chat, @required this.receiverId, @required this.chatId});
   static final String pageName = "chat";
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -30,7 +31,9 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void initState() {
-    _user = types.User(id: widget._currentUser);
+    _user = types.User(
+        id: widget._currentUser,
+        createdAt: Timestamp.now().toDate().millisecond);
     chatId = widget.chatId;
     super.initState();
   }
@@ -151,18 +154,14 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   void _handleSendPressed(types.PartialText message) async {
-    //TODO crate the firebase suitable document and write into the database
     final textMessage = types.TextMessage(
-      authorId: _user.id,
+      author: types.User(id: _user.id),
       id: const Uuid().v4(),
       text: message.text,
-      timestamp: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
+      createdAt: (DateTime.now().millisecondsSinceEpoch / 1000).floor(),
     );
-    //TODO get the chatId from somewhere
-    //TODO get the receiver id from the clicked event
-    // print(widget.chat.toJson());
     String receiverId = widget.chat.user2Id;
-    if(chatId == ""){
+    if (chatId == "") {
       var chId = await _userController.createChat(widget.chat);
       setState(() {
         chatId = chId;
@@ -181,7 +180,9 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
           children: [
             CustomAppBar(
-              title: widget._currentUser != widget.chat.user1Id ? widget.chat.user1name : widget.chat.user2name,
+              title: widget._currentUser != widget.chat.user1Id
+                  ? widget.chat.user1name
+                  : widget.chat.user2name,
             ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
@@ -193,16 +194,23 @@ class _ChatPageState extends State<ChatPage> {
                   builder: (context, snapshot) {
                     List<types.Message> sentMessages = [];
                     if (snapshot.hasData) {
+                      print(snapshot.data.size);
                       snapshot.data.docs.forEach((doc) {
                         print('Current sender_id => ${doc['sender_id']}');
 
                         Timestamp timestamp = doc['timestamp'] as Timestamp;
-                        var dateTime = timestamp.toDate().millisecondsSinceEpoch / 1000;
+                        var dateTime =
+                            timestamp.toDate().millisecondsSinceEpoch / 1000;
 
                         var message = {
                           'authorId': doc['sender_id'],
+                          'author': {
+                            'createdAt': Timestamp.now().millisecondsSinceEpoch,
+                            'id': doc['sender_id'],
+                          },
                           'text': doc['content'],
                           'timestamp': dateTime.floor(),
+                          'createdAt': dateTime.floor(),
                           'type': 'text',
                           'status':
                               'Status.delivered', //TODO change the messages type based on the message status

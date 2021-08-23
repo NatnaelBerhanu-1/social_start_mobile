@@ -54,7 +54,7 @@ class FirebaseServices{
 
   Future<QuerySnapshot> readPosts(String type, String orderBy) async {
     print(orderBy);
-    var postsRef =  await _fireStore.collection("posts").where("type", isEqualTo: type).orderBy(orderBy, descending: true).get().onError((error, stackTrace){
+    var postsRef =  await _fireStore.collection("posts").orderBy(orderBy, descending: true).get().onError((error, stackTrace){
       throw Exception("failed to fetch posts");
     });
     return postsRef;
@@ -77,11 +77,13 @@ class FirebaseServices{
       DocumentReference userRef = _fireStore.collection("users").doc(userLike.user.uid);
 
       DocumentSnapshot postSnapshot = await transaction.get(postRef);
-      // DocumentSnapshot userSnapshot = await transaction.get(userRef);
+      DocumentSnapshot userSnapshot = await transaction.get(userRef);
 
       var newLikeCount = postSnapshot.get("likes") == null ? 1 : postSnapshot.get("likes") + 1;
+      var newUserLike = userSnapshot.get("likes") == null ? 1 : userSnapshot.get("likes") + 1;
       transaction.update(userRef, {"liked_posts": userLike.user.likedPosts});
       transaction.update(postRef, {"likes": newLikeCount});
+      transaction.update(userRef, {"likes": newUserLike});
     });
     return true;
   }

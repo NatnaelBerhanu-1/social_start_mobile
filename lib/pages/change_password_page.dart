@@ -7,8 +7,7 @@ import 'package:social_start/utils/utility.dart';
 import 'package:social_start/widgets/custom_appbar.dart';
 import 'package:validators/validators.dart';
 
-class ChangePasswordPage extends StatefulWidget{
-
+class ChangePasswordPage extends StatefulWidget {
   static final pageName = "verifyEmail";
 
   @override
@@ -26,11 +25,13 @@ class _VerifyEmailPageState extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      appBar: AppBar(title: Text("Change password")),
       body: SafeArea(
         child: Column(
           children: [
-            CustomAppBar(title: "ChangePassword"),
-            SizedBox(height: 15,),
+            SizedBox(
+              height: 15,
+            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Form(
@@ -38,54 +39,65 @@ class _VerifyEmailPageState extends State<ChangePasswordPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20,),
+                    SizedBox(
+                      height: 20,
+                    ),
                     SizedBox(
                       height: 50,
                       child: TextFormField(
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             email = value;
                           });
                         },
-                        validator: (value){
-                          if(value.isEmpty){
+                        validator: (value) {
+                          if (value.isEmpty) {
                             return "Field required";
                           }
-                          if(!isEmail(value)){
+                          if (!isEmail(value)) {
                             return "Invalid email";
                           }
                           return null;
                         },
                         decoration: InputDecoration(
-                          enabledBorder: _enabledBorderStyle(),
-                          focusedBorder: _focusedBorderStyle(),
-                          hintText: "Enter email"
-                        ),
+                            enabledBorder: _enabledBorderStyle(),
+                            focusedBorder: _focusedBorderStyle(),
+                            hintText: "Enter email"),
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     GestureDetector(
                       child: Container(
                           color: kPrimaryColor,
                           height: 50,
                           width: kScreenWidth(context),
-                          child: Center(child: Text("Get link", style: TextStyle(color: Colors.white),))),
+                          child: Center(
+                              child: Text(
+                            "Get link",
+                            style: TextStyle(color: Colors.white),
+                          ))),
                       onTap: () async {
-                        if(_emailFormKey.currentState.validate()){
-                          await Utility.showProgressAlertDialog(context, "Please wait..");
-                          if(await _firebaseServices.checkUser(email)){
-                            FirebaseAuth.instance.sendPasswordResetEmail(email: email)
-                                .then((value){
-                              Utility.showSnackBar(context, "password reset email has been sent");
+                        if (_emailFormKey.currentState.validate()) {
+                          await Utility.showProgressAlertDialog(
+                              context, "Please wait..");
+                          if (await _firebaseServices.checkUser(email)) {
+                            FirebaseAuth.instance
+                                .sendPasswordResetEmail(email: email)
+                                .then((value) {
+                              Utility.showSnackBar(context,
+                                  "password reset email has been sent");
                               Navigator.pop(context);
-                            })
-                                .onError((error, stackTrace){
+                            }).onError((error, stackTrace) {
                               print(error);
-                              Utility.showSnackBar(context, "Error sending password reset email, try again");
+                              Utility.showSnackBar(context,
+                                  "Error sending password reset email, try again");
                               Navigator.pop(context);
                             });
-                          }else{
-                            Utility.showSnackBar(context, "No user found with the provided email");
+                          } else {
+                            Utility.showSnackBar(context,
+                                "No user found with the provided email");
                             Navigator.pop(context);
                           }
                         }
@@ -100,21 +112,14 @@ class _VerifyEmailPageState extends State<ChangePasswordPage> {
       ),
     );
   }
-  OutlineInputBorder _enabledBorderStyle(){
+
+  OutlineInputBorder _enabledBorderStyle() {
     return OutlineInputBorder(
-        borderSide: BorderSide(
-            color: kBorderColor,
-            width: 1
-        )
-    );
+        borderSide: BorderSide(color: kBorderColor, width: 1));
   }
 
-  OutlineInputBorder _focusedBorderStyle(){
+  OutlineInputBorder _focusedBorderStyle() {
     return OutlineInputBorder(
-        borderSide: BorderSide(
-            color: kAccentColor,
-            width: 1
-        )
-    );
+        borderSide: BorderSide(color: kAccentColor, width: 1));
   }
 }

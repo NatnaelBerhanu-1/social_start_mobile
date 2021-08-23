@@ -8,22 +8,22 @@ import 'package:social_start/services/user_service.dart';
 class UserController {
   final UserService _userService = UserService();
 
-  Future<void> createUser({lusr.User user}){
+  Future<void> createUser({lusr.User user}) {
     return _userService.createUser(user);
   }
 
-  Future<lusr.User> getUser([String uid = ""]) async{
-    if(uid == ""){
+  Future<lusr.User> getUser([String uid = ""]) async {
+    if (uid == "") {
       uid = FirebaseAuth.instance.currentUser.uid;
     }
     return await _userService.getUser(uid);
   }
 
-  Stream<DocumentSnapshot> getUserStream(String uid){
+  Stream<DocumentSnapshot> getUserStream(String uid) {
     return _userService.getUserStream(uid);
   }
 
-  Future<void> updateUserPosts(String uid, lusr.User user) async{
+  Future<void> updateUserPosts(String uid, lusr.User user) async {
     return await _userService.updateUserPosts(uid, user);
   }
 
@@ -39,15 +39,23 @@ class UserController {
     return await _userService.updateUserProfilePIc(userId, imageUrl);
   }
 
-  Future<dynamic> getChatId(userOneId, userTwoId) async{
+  Future<dynamic> getChatId(userOneId, userTwoId) async {
     return await _userService.getChatId(userOneId, userTwoId);
   }
 
-  Future<dynamic> createChat(Chat chat) async{
+  Future<dynamic> createChat(Chat chat) async {
     return await _userService.createChat(chat);
   }
 
   Future<dynamic> purchaseSocialPoint(purchasedPoint) async {
     return await _userService.purchaseSocialPoint(purchasedPoint);
+  }
+
+  Future<void> addSubscription(subDetail) async {
+    return await _userService.addSubscription(subDetail);
+  }
+
+  Future<void> updateUser(lusr.User user) async {
+    return await _userService.updateUser(user);
   }
 }

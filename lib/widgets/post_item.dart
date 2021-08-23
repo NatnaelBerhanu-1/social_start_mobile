@@ -11,7 +11,9 @@ import 'package:social_start/models/post.dart';
 import 'package:social_start/models/user.dart';
 import 'package:social_start/models/user_like.dart';
 import 'package:social_start/pages/message_page.dart';
+import 'package:social_start/pages/post_detail_page.dart';
 import 'package:social_start/pages/profile_page.dart';
+import 'package:social_start/pages/view_content_page.dart';
 import 'package:social_start/utils/constants.dart';
 import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
@@ -71,18 +73,20 @@ class _PostItemState extends State<PostItem> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text('${widget.post.caption}'),
           ),
-          GestureDetector(
-            onTap: widget.onPressed,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10.0)),
-                width: kScreenWidth(context),
-                constraints: BoxConstraints(
-                  maxHeight: 400,
-                ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(10.0)),
+              width: kScreenWidth(context),
+              constraints: BoxConstraints(
+                maxHeight: 400,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, ViewContentPage.pageName, arguments: widget.post);
+                },
                 child: Center(
                   child: widget.post.type == "picture"
                       ? _buildImage()
@@ -134,54 +138,88 @@ class _PostItemState extends State<PostItem> {
           Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
+              Row(children: [
+                Text(
+                  '${widget.post.user.firstName} ',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor),
+                ),
+                widget.user.following.indexOf(widget.post.userId) == -1
+                    ? Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                            child: GestureDetector(
+                                onTap: () {
+                                  _userController
+                                      .followUser(
+                                          widget.user.uid, widget.post.userId)
+                                      .then((value) {
+                                    print("Then: here");
+                                    setState(() {
+                                      widget.user.following
+                                          .add(widget.post.userId);
+                                    });
+                                  });
+                                },
+                                child: Text(
+                                  'follow +',
+                                  style: TextStyle(
+                                      color: kAccentColor, fontSize: 14.0),
+                                ))))
+                    : Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                            child: Text(
+                          'following',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 14.0),
+                        )))
+              ]),
               Text(
-                '${widget.post.user.firstName} ',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor),
-              ),
-              Text(
-                '${widget.user.totalFollowers} followers',
+                '${widget.user.totalFollowers} followers, ${widget.user.likes} likes',
                 style: TextStyle(
                     fontSize: 12.0, color: Theme.of(context).primaryColorLight),
               )
             ],
           ),
-          widget.user.following.indexOf(widget.post.userId) == -1
-              ? Expanded(
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                          child: GestureDetector(
-                              onTap: () {
-                                _userController
-                                    .followUser(
-                                        widget.user.uid, widget.post.userId)
-                                    .then((value) {
-                                  print("Then: here");
-                                  setState(() {
-                                    widget.user.following
-                                        .add(widget.post.userId);
-                                  });
-                                });
-                              },
-                              child: Text(
-                                'follow +',
-                                style: TextStyle(
-                                    color: kAccentColor, fontSize: 14.0),
-                              )))))
-              : Expanded(
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                          child: Text(
-                        'following',
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 14.0),
-                      ))))
+          // widget.user.following.indexOf(widget.post.userId) == -1
+          //     ? Expanded(
+          //         child: Align(
+          //             alignment: Alignment.centerRight,
+          //             child: Container(
+          //                 child: GestureDetector(
+          //                     onTap: () {
+          //                       _userController
+          //                           .followUser(
+          //                               widget.user.uid, widget.post.userId)
+          //                           .then((value) {
+          //                         print("Then: here");
+          //                         setState(() {
+          //                           widget.user.following
+          //                               .add(widget.post.userId);
+          //                         });
+          //                       });
+          //                     },
+          //                     child: Text(
+          //                       'follow +',
+          //                       style: TextStyle(
+          //                           color: kAccentColor, fontSize: 14.0),
+          //                     )))))
+          //     : Expanded(
+          //         child: Align(
+          //             alignment: Alignment.centerRight,
+          //             child: Container(
+          //                 child: Text(
+          //               'following',
+          //               style: TextStyle(
+          //                   color: Theme.of(context).primaryColor,
+          //                   fontSize: 14.0),
+          //             ))))
         ],
       ),
     );
@@ -194,7 +232,7 @@ class _PostItemState extends State<PostItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _buildLikeButton(),
               SizedBox(
@@ -203,8 +241,14 @@ class _PostItemState extends State<PostItem> {
               // _buildPostActions(Icons.mode_comment_outlined, "123", (){print("comment pressed");}),
               // SizedBox(width: 10,),
               // _buildPostActions(Icons.visibility, "123", (){print("view pressed");}),
-              Expanded(
-                  child: Container(
+              GestureDetector(
+                child: Icon(Icons.comment),
+                onTap: widget.onPressed,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Container(
                 alignment: Alignment.centerRight,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -235,10 +279,17 @@ class _PostItemState extends State<PostItem> {
                                             Navigator.pop(context);
                                           }
                                         },
-                                        title: Text("Award social point",  style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color)),
+                                        title: Text("Award social point",
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2
+                                                    .color)),
                                         leading: Icon(
                                           Icons.bookmark_add,
-                                          color: Theme.of(context).accentIconTheme.color,
+                                          color: Theme.of(context)
+                                              .accentIconTheme
+                                              .color,
                                         ),
                                         horizontalTitleGap: 1.0,
                                       ),
@@ -246,10 +297,18 @@ class _PostItemState extends State<PostItem> {
                                       ListTile(
                                         leading: Icon(
                                           Icons.message,
-                                          color: Theme.of(context).accentIconTheme.color,
-
+                                          color: Theme.of(context)
+                                              .accentIconTheme
+                                              .color,
                                         ),
-                                        title: Text("Message", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),
+                                        title: Text(
+                                          "Message",
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2
+                                                  .color),
+                                        ),
                                         horizontalTitleGap: 1.0,
                                         onTap: () async {
                                           print(
@@ -304,7 +363,7 @@ class _PostItemState extends State<PostItem> {
                     ),
                   ],
                 ),
-              ))
+              )
             ],
           ),
           SizedBox(

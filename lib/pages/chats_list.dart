@@ -18,7 +18,7 @@ class ChatList extends StatelessWidget {
     return SafeArea(
       child: Column(
         children: [
-          CustomAppBar(showBackArrow: false, title: "Chats"),
+          // CustomAppBar(showBackArrow: false, title: "Chats"),
           Expanded(
             flex: 1,
             child: StreamBuilder<QuerySnapshot>(

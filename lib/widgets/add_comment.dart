@@ -40,6 +40,7 @@ class _AddCommentState extends State<AddComment> {
                     comment = value;
                   });
                 },
+                autofocus: true,
                 decoration: InputDecoration(
                   border: _inputBorder(),
                   fillColor: Theme.of(context).scaffoldBackgroundColor,

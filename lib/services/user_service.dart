@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:social_start/models/chat.dart';
+import 'package:social_start/models/post.dart';
 import 'package:social_start/models/user.dart';
 import 'package:social_start/utils/utility.dart';
 
@@ -220,5 +221,45 @@ class UserService extends BaseService {
     User user = User.fromJson(usr.data());
     user.socialPoint.permanent = user.socialPoint.permanent + purchasedPoint;
     usrRef.update({'social_point': user.socialPoint.toJson()});
+  }
+
+  Future<void> addSubscription(SubscriptionDetail subDetail) async {
+    DocumentReference<Map<String, dynamic>> usrRef =
+        fireStore.collection("users").doc(Utility.getUserId());
+    DocumentSnapshot<Map<String, dynamic>> usr = await usrRef.get();
+    User user = User.fromJson(usr.data());
+    user.socialPoint.permanent =
+        user.socialPoint.permanent + subDetail.socialPoint;
+    usrRef.update({'social_point': user.socialPoint.toJson()});
+    Map<String, dynamic> subs = {};
+    user.subscriptions.forEach((key, value) {
+      subs[key] = value.toJson();
+    });
+    subs[subDetail.entitlementId] = subDetail.toJson();
+    usrRef.update({'subscriptions': subs});
+  }
+
+  Future<List<User>> getLeaderBoards() async {
+    Query<Map<String, dynamic>> queryRef = fireStore
+        .collection("users")
+        .orderBy('likes', descending: true)
+        .limit(5);
+
+    QuerySnapshot snapshot = await queryRef.get();
+    List<User> users = [];
+    print("users users");
+    print(snapshot.docs);
+
+    snapshot.docs.forEach((element) {
+      users.add(User.fromJson(element.data()));
+    });
+
+    return users;
+  }
+
+  Future<void> updateUser(User user) async {
+    DocumentReference userRef =
+        fireStore.collection("users").doc(Utility.getUserId());
+    return userRef.update(user.toJson());
   }
 }
