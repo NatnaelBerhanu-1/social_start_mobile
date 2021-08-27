@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:social_start/models/post.dart';
@@ -21,7 +22,7 @@ class _ViewContentPageState extends State<ViewContentPage> {
 
   @override
   void initState() {
-    _initializeVideo();
+    if (widget.post.type.toLowerCase() == "video") _initializeVideo();
     super.initState();
   }
 
@@ -29,17 +30,35 @@ class _ViewContentPageState extends State<ViewContentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black87,
-        body: Center(
-            child: widget.post.type == "picture"
-                ? _buildImageWidget(context)
-                : _buildVideo()));
+        body: Stack(
+          children: [
+            Center(
+                child: widget.post.type == "picture"
+                    ? _buildImageWidget(context)
+                    : _buildVideo()),
+            Positioned(
+                top: 50,
+                right: 10,
+                child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(Icons.fullscreen, color: Colors.white)))
+          ],
+        ));
   }
 
   _buildImageWidget(context) {
-    return Image.network(
-      widget.post.fileUrl,
+    return CachedNetworkImage(
+      imageUrl: widget.post.fileUrl,
       fit: BoxFit.fitWidth,
       width: kScreenWidth(context),
+      errorWidget: (context, url, stackTrace) => Center(
+        child: Text(
+          "Can't load Image",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
     );
   }
 

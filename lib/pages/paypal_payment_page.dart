@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:social_start/models/checkout.dart';
 import 'package:social_start/models/user.dart';
 import 'package:social_start/controllers/user_controller.dart';
-import 'package:social_start/models/user.dart';
 import 'package:social_start/utils/service_locator.dart';
-import 'package:social_start/utils/utility.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../services/paypal_service.dart';
 
@@ -77,9 +75,9 @@ class PaypalPaymentState extends State<PaypalPayment> {
   }
 
   // item name, price and quantity
-  String itemName = 'iPhone X';
-  String itemPrice = '1.99';
-  int quantity = 1;
+  // String itemName = 'iPhone X';
+  // String itemPrice = '1.99';
+  // int quantity = 1;
 
   Future<Map<String, dynamic>> getOrderParams() async {
     List items = widget.checkoutModel.checkoutItems.map((e) => e.toJson()).toList();

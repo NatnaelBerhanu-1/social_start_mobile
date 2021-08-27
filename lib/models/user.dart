@@ -36,6 +36,7 @@ class User {
   Map<String, SubscriptionDetail> subscriptions = {};
   int likes = 0;
   int views = 0;
+  double balance = 0.0;
 
   User({
     this.uid,
@@ -57,7 +58,8 @@ class User {
     this.blocked = false,
     this.subscriptions = const {},
     this.likes = 0,
-    this.views = 0
+    this.views = 0,
+    this.balance = 0.0,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -88,8 +90,8 @@ class User {
                         updatedAt: value['updated_at'])))
             : null,
         likes: json['likes'],
-        views: json['views']);
-        
+        views: json['views'],
+        balance: double.parse(json['balance'].toString()));
   }
 
   factory User.forPost(Map<String, dynamic> json) {
@@ -151,7 +153,8 @@ class User {
       'subscriptions':
           this.subscriptions.map((key, value) => MapEntry(key, value.toJson())),
       'likes': this.likes,
-      'views': this.views
+      'views': this.views,
+      'balance': this.balance,
     };
   }
 }

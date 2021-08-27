@@ -7,14 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:social_start/controllers/post_controller.dart';
 import 'package:social_start/controllers/user_controller.dart';
 import 'package:social_start/models/chat.dart';
+import 'package:social_start/models/checkout.dart';
 import 'package:social_start/models/post.dart';
 import 'package:social_start/models/user.dart';
 import 'package:social_start/models/user_like.dart';
 import 'package:social_start/pages/message_page.dart';
+import 'package:social_start/pages/paypal_payment_page.dart';
 import 'package:social_start/pages/post_detail_page.dart';
 import 'package:social_start/pages/profile_page.dart';
 import 'package:social_start/pages/view_content_page.dart';
 import 'package:social_start/utils/constants.dart';
+import 'package:social_start/utils/helper.dart';
 import 'package:social_start/utils/service_locator.dart';
 import 'package:social_start/utils/utility.dart';
 import 'package:video_player/video_player.dart';
@@ -63,35 +66,37 @@ class _PostItemState extends State<PostItem> {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).backgroundColor,
-      padding: EdgeInsets.all(widget.padding),
+      padding: EdgeInsets.symmetric(vertical: widget.padding),
       margin: EdgeInsets.symmetric(vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTop(),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: widget.padding),
+            child: _buildTop(),
+          ),
+          Padding(
+            padding:
+                EdgeInsets.symmetric(vertical: 8.0, horizontal: widget.padding),
             child: Text('${widget.post.caption}'),
           ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(10.0)),
-              width: kScreenWidth(context),
-              constraints: BoxConstraints(
-                maxHeight: 400,
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, ViewContentPage.pageName, arguments: widget.post);
-                },
-                child: Center(
-                  child: widget.post.type == "picture"
-                      ? _buildImage()
-                      : _buildVideo(),
-                ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.black,
+            ),
+            width: kScreenWidth(context),
+            constraints: BoxConstraints(
+              maxHeight: 400,
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, ViewContentPage.pageName,
+                    arguments: widget.post);
+              },
+              child: Center(
+                child: widget.post.type == "picture"
+                    ? _buildImage()
+                    : _buildVideo(),
               ),
             ),
           ),
@@ -232,12 +237,9 @@ class _PostItemState extends State<PostItem> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildLikeButton(),
-              SizedBox(
-                width: 10,
-              ),
               // _buildPostActions(Icons.mode_comment_outlined, "123", (){print("comment pressed");}),
               // SizedBox(width: 10,),
               // _buildPostActions(Icons.visibility, "123", (){print("view pressed");}),
@@ -245,9 +247,7 @@ class _PostItemState extends State<PostItem> {
                 child: Icon(Icons.comment),
                 onTap: widget.onPressed,
               ),
-              SizedBox(
-                width: 10,
-              ),
+
               Container(
                 alignment: Alignment.centerRight,
                 child: Row(
@@ -354,16 +354,17 @@ class _PostItemState extends State<PostItem> {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    Text(
-                      '${widget.post.points}',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: Theme.of(context).primaryColor),
-                    ),
+                    // Text(
+                    //   '${widget.post.points}',
+                    //   style: TextStyle(
+                    //       fontWeight: FontWeight.bold,
+                    //       fontSize: 14,
+                    //       color: Theme.of(context).primaryColor),
+                    // ),
                   ],
                 ),
-              )
+              ),
+              _buildTipButton(context)
             ],
           ),
           SizedBox(
@@ -440,16 +441,16 @@ class _PostItemState extends State<PostItem> {
                 ? Theme.of(context).primaryColor
                 : kAccentColor,
           ),
-          SizedBox(
-            width: 3,
-          ),
-          Text(
-            '${post.likes} likes',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                color: Theme.of(context).primaryColor),
-          ),
+          // SizedBox(
+          //   width: 3,
+          // ),
+          // Text(
+          //   '${post.likes} likes',
+          //   style: TextStyle(
+          //       fontWeight: FontWeight.bold,
+          //       fontSize: 14,
+          //       color: Theme.of(context).primaryColor),
+          // ),
         ],
       ),
     );
@@ -487,5 +488,116 @@ class _PostItemState extends State<PostItem> {
       )),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );
+  }
+
+  _buildTipButton(BuildContext context) {
+    return IconButton(
+        onPressed: () => _showTipDialog(context),
+        icon: Icon(Icons.attach_money));
+  }
+
+  _showTipDialog(BuildContext mContext) {
+    var _amountController = TextEditingController();
+    var _messageController = TextEditingController();
+    var _formKey = GlobalKey<FormState>();
+    showDialog(
+      context: mContext,
+      barrierDismissible: true,
+      builder: (context) {
+        return AlertDialog(
+            content: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Text("Tip"),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                          child: TextFormField(
+                        controller: _amountController,
+                        validator: (value) {
+                          if (value.isEmpty || double.parse(value) < 1.0) {
+                            return "Invalid input";
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
+                        decoration: InputDecoration(
+                            focusedBorder: _outlineBorderFocused(),
+                            errorBorder: _outlineBorderError(),
+                            prefixIcon: Icon(
+                              Icons.attach_money,
+                              size: 18,
+                            ),
+                            hintText: "0.00",
+                            enabledBorder: _outlineBorder()),
+                      )),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                      controller: _messageController,
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                          enabledBorder: _outlineBorder(),
+                          focusedBorder: _outlineBorderFocused(),
+                          errorBorder: _outlineBorderError(),
+                          hintText: "Message")),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                  child: Text("Send"),
+                  onPressed: () {
+                    if (_formKey.currentState.validate()) {
+                      _processPayment(double.parse(_amountController.text),
+                          _messageController.text);
+                    }
+                  })
+            ]);
+      },
+    );
+  }
+
+  _outlineBorder() {
+    return OutlineInputBorder(
+        borderSide: BorderSide(width: 1.0, color: kBorderColor));
+  }
+
+  _outlineBorderFocused() {
+    return OutlineInputBorder(
+        borderSide: BorderSide(width: 1.0, color: kPrimaryColor));
+  }
+
+  _outlineBorderError() {
+    return OutlineInputBorder(
+        borderSide: BorderSide(width: 1.0, color: Colors.red));
+  }
+
+  void _processPayment(double amount, String message) {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => PaypalPayment(
+            checkoutModel: CheckoutModel(checkoutItems: [
+              CheckoutItem(itemName: "Tip", itemPrice: amount, quantity: 1)
+            ], totalAmount: amount),
+            onFinish:(id) => _paymnetFinished(id, amount, message))));
+  }
+
+  _paymnetFinished(String id, [tipAmount, message]) async {
+    print("Success with$id");
+    User receiver = widget.post.user;
+    receiver.uid = widget.post.userId;
+    User tipper = widget.user;
+    tipper.uid = Utility.getUserId();
+    var transactionState =
+        await _userController.tipUser(tipper, receiver, tipAmount, id, message);
+    Utility.showSnackBar(context, "Tipped successfully");
+    Navigator.pop(context);
   }
 }

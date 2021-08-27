@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -245,11 +246,12 @@ class _SettingsPageState extends State<SettingsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             imageUrl != null
-                ? Image.network(
-                    imageUrl,
+                ? CachedNetworkImage(
+                    imageUrl:imageUrl,
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>  Center(child:Text("Can't load image")),
                   )
                 : Image.asset(
                     'assets/images/sample_profile_pic.jpg',
@@ -288,11 +290,13 @@ class _SettingsPageState extends State<SettingsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             imageUrl != null
-                ? Image.network(
-                    imageUrl,
+                ? CachedNetworkImage(
+                    imageUrl:imageUrl,
                     width: kScreenWidth(context) - 16,
                     height: 120,
                     fit: BoxFit.cover,
+                    errorWidget: (context, url, error) =>  Center(child:Text("Can't load image")),
+
                   )
                 : Image.asset(
                     'assets/images/sample_banner.jpg',

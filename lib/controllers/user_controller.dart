@@ -58,4 +58,9 @@ class UserController {
   Future<void> updateUser(lusr.User user) async {
     return await _userService.updateUser(user);
   }
+
+  Future<void> tipUser(tipper, reciever, tipAmount, transactionId, message) async {
+    return await _userService.tipUser(
+        tipper, reciever, tipAmount, transactionId, message);
+  }
 }

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:social_start/models/chat.dart';
-import 'package:social_start/models/post.dart';
+import 'package:social_start/models/transaction.dart' as lTransaction;
 import 'package:social_start/models/user.dart';
 import 'package:social_start/utils/utility.dart';
 
@@ -261,5 +260,66 @@ class UserService extends BaseService {
     DocumentReference userRef =
         fireStore.collection("users").doc(Utility.getUserId());
     return userRef.update(user.toJson());
+  }
+
+  Future<void> tipUser(
+      User tipper, User reciever, tipAmount, transactionId, String message,
+      [paymentProvider = "paypal"]) async {
+    // add transaction
+    // fireStore.collection("transactions").add({"amount": tipAmount});
+    fireStore.runTransaction((transaction) async {
+      DocumentReference transactionRef =
+          fireStore.collection("transactions").doc();
+      // DocumentReference chatRef = fireStore.collection("chats").doc();
+      DocumentReference messagesRef = fireStore.collection("messages").doc();
+      // DocumentReference tipperRef =
+      //     fireStore.collection("users").doc(tipper.uid);
+      DocumentReference recieverRef =
+          fireStore.collection("users").doc(reciever.uid);
+
+      DocumentSnapshot recieverSnapshot = await transaction.get(recieverRef);
+      print(recieverSnapshot.data());
+      double updatedBalance = recieverSnapshot.get("balance") + tipAmount;
+
+      // datas
+      var transactionData = lTransaction.Transaction(
+              amount: tipAmount,
+              from: tipper.uid,
+              to: reciever.uid,
+              paymnentProvider: paymentProvider,
+              transactionId: transactionId)
+          .toMap();
+
+      transaction.set(transactionRef, transactionData);
+      transaction.update(recieverRef, {"balance": updatedBalance});
+      if (message.isNotEmpty) {
+        // get chat if exists
+        var chat = Chat(
+            lastMessage: message,
+            user1Id: tipper.uid,
+            user2Id: reciever.uid,
+            lastMessageBy: tipper.uid,
+            user1name: tipper.firstName,
+            user2name: reciever.firstName,
+            user1ProfilePic: tipper.profileUrl,
+            user2ProfilePic: reciever.profileUrl);
+        var chatId = await this.getChatId(tipper.uid, reciever.uid);
+        if (chatId == null) {
+          chatId = await this.createChat(chat);
+        }
+
+        Map<String, dynamic> messageData = {
+          "chat_id": chatId,
+          "content": message,
+          "reciever_id": reciever.uid,
+          "sender_id": tipper.uid,
+          "timestamp": Timestamp.now()
+        };
+
+        transaction.set(messagesRef, messageData);
+      }
+    });
+
+    return;
   }
 }

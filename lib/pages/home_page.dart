@@ -25,8 +25,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final PostController _postController = PostController();
-  final UserController _userController = getIt<UserController>();
 
   List<Post> allPosts;
   List<Post> filteredPosts;
