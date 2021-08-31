@@ -69,11 +69,12 @@ class CustomAppBar extends StatelessWidget {
             ),
             Expanded(
                 child: Center(
-              child: Text(
-                '$title',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-            )),
+                    // child: Text(
+                    //   '$title',
+                    //   style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                    // ),
+                    child: Image.asset("assets/images/social_start_header.png",
+                        height: 60, fit: BoxFit.fitHeight))),
             SizedBox(
               width: 90,
               child: Column(

@@ -108,8 +108,10 @@ class _MainPageState extends State<MainPage> {
 
   _bottomNavItem({int index, IconData icon, String label}) {
     Color color = _selectedIndex == index
-        ? Theme.of(context).primaryColor
+        ? Colors.red
         : Theme.of(context).accentIconTheme.color;
+    FontWeight fontWeight =
+        _selectedIndex == index ? FontWeight.bold : FontWeight.normal;
     return Expanded(
       child: GestureDetector(
         onTap: () {
@@ -126,7 +128,7 @@ class _MainPageState extends State<MainPage> {
             ),
             Text(
               '$label',
-              style: TextStyle(color: color),
+              style: TextStyle(color: color, fontWeight: fontWeight),
             )
           ],
         ),
